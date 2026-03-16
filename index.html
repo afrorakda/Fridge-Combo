@@ -7,8 +7,12 @@
     <style>
         body { font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; line-height: 1.6; }
         h1 { text-align: center; color: #1a73e8; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .input-group { position: relative; margin: 10px 0; }
+        input { width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; padding-right: 60px; }
+        .button-group { display: flex; gap: 10px; }
+        button { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-find { background: #1a73e8; color: white; }
+        .btn-clear { background: #e8eaed; color: #5f6368; }
         .result-box { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e8eaed; display: none; }
         .ad-space { margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px; text-align: center; font-size: 14px; }
     </style>
@@ -17,8 +21,14 @@
     <h1>Fridge Combo</h1>
     <p>Enter ingredients (e.g., Beef, Tomato):</p>
     
-    <input type="text" id="ingredients" placeholder="Beef, Tomato, Garlic...">
-    <button onclick="findRecipes()">Find Ideas</button>
+    <div class="input-group">
+        <input type="text" id="ingredients" placeholder="Beef, Tomato, Garlic...">
+    </div>
+    
+    <div class="button-group">
+        <button class="btn-clear" onclick="clearAll()">Clear</button>
+        <button class="btn-find" onclick="findRecipes()">Find Ideas</button>
+    </div>
 
     <div id="result" class="result-box">
         <h2 id="r-name" style="margin-top:0;"></h2>
@@ -40,7 +50,6 @@
             const input = document.getElementById('ingredients').value.toLowerCase();
             const resultDiv = document.getElementById('result');
             
-            // どれか1つでも材料が一致するレシピを探す
             const match = recipes.find(r => r.needs.some(n => input.includes(n)));
 
             if (match) {
@@ -50,6 +59,11 @@
             } else {
                 alert("No recipe found! Try other ingredients.");
             }
+        }
+
+        function clearAll() {
+            document.getElementById('ingredients').value = "";
+            document.getElementById('result').style.display = 'none';
         }
     </script>
 </body>
