@@ -5,19 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fridge Combo - What's for dinner?</title>
     <style>
-        /* Classic Minimalist Design (Google Style) */
         body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; color: #202124; line-height: 1.6; }
         h1 { font-size: 24px; text-align: center; margin-bottom: 30px; }
         .item-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
         .item { border: 1px solid #dfe1e5; padding: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; }
         .item input { margin-right: 10px; width: 20px; height: 20px; }
-        .item:hover { background: #f8f9fa; }
-        
         button { width: 100%; padding: 15px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        button:active { background-color: #174ea6; }
-
         #result { margin-top: 30px; padding: 20px; border-radius: 8px; background-color: #f1f3f4; display: none; }
-        .ad-space { margin-top: 20px; font-size: 12px; color: #70757a; border-top: 1px dashed #ccc; padding-top: 10px; text-align: center; }
+        .ad-space { margin-top: 20px; font-size: 14px; color: #70757a; border-top: 1px dashed #ccc; padding-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -28,7 +23,7 @@
     <div class="item-list">
         <label class="item"><input type="checkbox" value="Beef"> Beef</label>
         <label class="item"><input type="checkbox" value="Chicken"> Chicken</label>
-        <label class="item"><input type="checkbox" value="Egg"> Eggs</label>
+        <label class="item"><input type="checkbox" value="Eggs"> Eggs</label>
         <label class="item"><input type="checkbox" value="Onion"> Onion</label>
         <label class="item"><input type="checkbox" value="Potato"> Potato</label>
         <label class="item"><input type="checkbox" value="Tomato"> Tomato</label>
@@ -40,16 +35,15 @@
         <h2 id="recipe-name"></h2>
         <p id="recipe-suggestion"></p>
         <div class="ad-space">
-            Recommended Kitchen Tool: <br>
-            <a href="#" id="affiliate-link">Get a Professional Chef's Knife</a>
+            <a href="#" id="affiliate-link">Get a recommended kitchen tool here</a>
         </div>
     </div>
 
     <script>
         const recipes = [
             { name: "Steak & Onions", needs: ["Beef", "Onion"], plus: "Black Pepper" },
-            { name: "Potato Salad", needs: ["Potato", "Egg"], plus: "Mayonnaise" },
-            { name: "Omelet", needs: ["Egg", "Tomato"], plus: "Cheese" },
+            { name: "Potato Salad", needs: ["Potato", "Eggs"], plus: "Mayonnaise" },
+            { name: "Omelet", needs: ["Eggs", "Tomato"], plus: "Cheese" },
             { name: "Chicken Stew", needs: ["Chicken", "Potato", "Onion"], plus: "Carrots" }
         ];
 
@@ -59,12 +53,12 @@
             const nameEl = document.getElementById('recipe-name');
             const suggestEl = document.getElementById('recipe-suggestion');
 
-            // Logic: Find recipes where you have at least 1-2 key ingredients
-            const match = recipes.find(r => r.needs.every(n => checked.includes(n)));
+            // 1つでも一致すれば提案するように変更
+            const match = recipes.find(r => r.needs.some(n => checked.includes(n)));
 
             if (match) {
-                nameEl.innerText = "How about " + match.name + "?";
-                suggestEl.innerText = "If you buy [" + match.plus + "], it will be perfect!";
+                nameEl.innerText = "Try: " + match.name;
+                suggestEl.innerText = "If you have " + match.needs.join(", ") + ", adding " + match.plus + " makes it a great meal!";
                 resultDiv.style.display = 'block';
             } else {
                 alert("Try selecting more items!");
