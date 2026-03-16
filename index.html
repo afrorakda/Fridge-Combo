@@ -3,72 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fridge Combo - Cooking Made Simple</title>
-    <meta name="description" content="A minimalist recipe generator. Find quick meal ideas based on common ingredients in your fridge. No sign-up, no tracking, just cooking.">
-    <meta name="keywords" content="fridge, recipe, meal planner, simple cooking, minimalist, food ideas">
-    <meta property="og:title" content="Fridge Combo - Cooking Made Simple">
-    <meta property="og:description" content="Quick meal ideas from your fridge ingredients.">
-    <meta property="og:type" content="website">
-
+    <title>Fridge Combo - Smart Cooking</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; color: #202124; line-height: 1.6; }
-        h1 { font-size: 26px; text-align: center; margin-bottom: 25px; color: #1a73e8; }
-        .item-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
-        .item { border: 1px solid #dfe1e5; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; font-size: 16px; }
-        .item input { margin-right: 12px; width: 22px; height: 22px; }
-        button { width: 100%; padding: 18px; background-color: #1a73e8; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        #result { margin-top: 30px; padding: 20px; border-radius: 8px; background-color: #f8f9fa; border: 1px solid #e8eaed; display: none; }
-        .ad-space { margin-top: 25px; font-size: 14px; color: #5f6368; border-top: 1px solid #dadce0; padding-top: 15px; text-align: center; }
+        body { font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; }
+        .result-box { margin-top: 20px; padding: 15px; background: #f0f4f8; border-radius: 8px; display: none; }
     </style>
 </head>
 <body>
-
     <h1>Fridge Combo</h1>
-    <p>Select ingredients in your fridge:</p>
+    <p>Enter ingredients (e.g., Beef, Onion):</p>
+    
+    <input type="text" id="ingredients" placeholder="Beef, Onion, Tomato...">
+    <button onclick="findRecipes()">Find Recipes</button>
 
-    <div class="item-list">
-        <label class="item"><input type="checkbox" value="Chicken Breast"> Chicken Breast</label>
-        <label class="item"><input type="checkbox" value="Ground Beef"> Ground Beef</label>
-        <label class="item"><input type="checkbox" value="Pasta"> Pasta</label>
-        <label class="item"><input type="checkbox" value="Zucchini"> Zucchini</label>
-        <label class="item"><input type="checkbox" value="Eggplant"> Eggplant</label>
-        <label class="item"><input type="checkbox" value="Tomato"> Tomato</label>
-        <label class="item"><input type="checkbox" value="Garlic"> Garlic</label>
-        <label class="item"><input type="checkbox" value="Thyme"> Thyme</label>
-    </div>
-
-    <button onclick="checkRecipes()">Find Ideas</button>
-
-    <div id="result">
-        <h2 id="recipe-name" style="margin-top:0;"></h2>
-        <p id="recipe-suggestion"></p>
-        <div class="ad-space">
-            <a href="#" id="affiliate-link" target="_blank">Get professional kitchen tools here</a>
-        </div>
+    <div id="result" class="result-box">
+        <h3 id="r-name"></h3>
+        <p id="r-desc"></p>
+        <a href="#" id="affiliate-link">Get tools here</a>
     </div>
 
     <script>
         const recipes = [
-            { name: "Herb Poached Chicken", needs: ["Chicken Breast", "Thyme"], plus: "Olive Oil" },
-            { name: "Garlic Basil Pasta", needs: ["Pasta", "Garlic"], plus: "Fresh Basil" },
-            { name: "Zucchini Salsa Noodles", needs: ["Zucchini", "Tomato"], plus: "Olive Oil" },
-            { name: "Eggplant & Beef Stir-fry", needs: ["Eggplant", "Ground Beef"], plus: "Soy Sauce" }
+            { name: "Steak & Onions", needs: ["Beef", "Onion"], plus: "Black Pepper" },
+            { name: "Herb Poached Chicken", needs: ["Chicken", "Thyme"], plus: "Olive Oil" }
         ];
 
-        function checkRecipes() {
-            const checked = Array.from(document.querySelectorAll('input:checked')).map(el => el.value);
+        function findRecipes() {
+            const input = document.getElementById('ingredients').value.toLowerCase();
             const resultDiv = document.getElementById('result');
-            const nameEl = document.getElementById('recipe-name');
-            const suggestEl = document.getElementById('recipe-suggestion');
-
-            const match = recipes.find(r => r.needs.some(n => checked.includes(n)));
+            
+            // 入力された文字を配列に変換
+            const inputArr = input.split(',').map(item => item.trim());
+            
+            // どれか1つでも材料が一致するレシピを探す
+            const match = recipes.find(r => r.needs.some(n => input.includes(n.toLowerCase())));
 
             if (match) {
-                nameEl.innerText = "Try: " + match.name;
-                suggestEl.innerText = "If you have " + match.needs.join(", ") + ", adding [" + match.plus + "] makes it perfect!";
+                document.getElementById('r-name').innerText = "Try: " + match.name;
+                document.getElementById('r-desc').innerText = "Add [" + match.plus + "] for extra flavor!";
                 resultDiv.style.display = 'block';
             } else {
-                alert("Try selecting more items from your fridge!");
+                alert("No recipes found! Try other ingredients.");
             }
         }
     </script>
