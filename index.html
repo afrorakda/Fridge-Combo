@@ -3,48 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fridge Combo - What's for dinner?</title>
+    <title>Fridge Combo - Cooking Made Simple</title>
+    <meta name="description" content="A minimalist recipe generator. Find quick meal ideas based on common ingredients in your fridge. No sign-up, no tracking, just cooking.">
+    <meta name="keywords" content="fridge, recipe, meal planner, simple cooking, minimalist, food ideas">
+    <meta property="og:title" content="Fridge Combo - Cooking Made Simple">
+    <meta property="og:description" content="Quick meal ideas from your fridge ingredients.">
+    <meta property="og:type" content="website">
+
     <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; color: #202124; line-height: 1.6; }
-        h1 { font-size: 24px; text-align: center; margin-bottom: 30px; }
-        .item-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
-        .item { border: 1px solid #dfe1e5; padding: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; }
-        .item input { margin-right: 10px; width: 20px; height: 20px; }
-        button { width: 100%; padding: 15px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        #result { margin-top: 30px; padding: 20px; border-radius: 8px; background-color: #f1f3f4; display: none; }
-        .ad-space { margin-top: 20px; font-size: 14px; color: #70757a; border-top: 1px dashed #ccc; padding-top: 10px; text-align: center; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; color: #202124; line-height: 1.6; }
+        h1 { font-size: 26px; text-align: center; margin-bottom: 25px; color: #1a73e8; }
+        .item-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
+        .item { border: 1px solid #dfe1e5; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; font-size: 16px; }
+        .item input { margin-right: 12px; width: 22px; height: 22px; }
+        button { width: 100%; padding: 18px; background-color: #1a73e8; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        #result { margin-top: 30px; padding: 20px; border-radius: 8px; background-color: #f8f9fa; border: 1px solid #e8eaed; display: none; }
+        .ad-space { margin-top: 25px; font-size: 14px; color: #5f6368; border-top: 1px solid #dadce0; padding-top: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
     <h1>Fridge Combo</h1>
-    <p>What's in your fridge?</p>
+    <p>Select ingredients in your fridge:</p>
 
     <div class="item-list">
-        <label class="item"><input type="checkbox" value="Beef"> Beef</label>
-        <label class="item"><input type="checkbox" value="Chicken"> Chicken</label>
-        <label class="item"><input type="checkbox" value="Eggs"> Eggs</label>
-        <label class="item"><input type="checkbox" value="Onion"> Onion</label>
-        <label class="item"><input type="checkbox" value="Potato"> Potato</label>
+        <label class="item"><input type="checkbox" value="Chicken Breast"> Chicken Breast</label>
+        <label class="item"><input type="checkbox" value="Ground Beef"> Ground Beef</label>
+        <label class="item"><input type="checkbox" value="Pasta"> Pasta</label>
+        <label class="item"><input type="checkbox" value="Zucchini"> Zucchini</label>
+        <label class="item"><input type="checkbox" value="Eggplant"> Eggplant</label>
         <label class="item"><input type="checkbox" value="Tomato"> Tomato</label>
+        <label class="item"><input type="checkbox" value="Garlic"> Garlic</label>
+        <label class="item"><input type="checkbox" value="Thyme"> Thyme</label>
     </div>
 
     <button onclick="checkRecipes()">Find Ideas</button>
 
     <div id="result">
-        <h2 id="recipe-name"></h2>
+        <h2 id="recipe-name" style="margin-top:0;"></h2>
         <p id="recipe-suggestion"></p>
         <div class="ad-space">
-            <a href="#" id="affiliate-link">Get a recommended kitchen tool here</a>
+            <a href="#" id="affiliate-link" target="_blank">Get professional kitchen tools here</a>
         </div>
     </div>
 
     <script>
         const recipes = [
-            { name: "Steak & Onions", needs: ["Beef", "Onion"], plus: "Black Pepper" },
-            { name: "Potato Salad", needs: ["Potato", "Eggs"], plus: "Mayonnaise" },
-            { name: "Omelet", needs: ["Eggs", "Tomato"], plus: "Cheese" },
-            { name: "Chicken Stew", needs: ["Chicken", "Potato", "Onion"], plus: "Carrots" }
+            { name: "Herb Poached Chicken", needs: ["Chicken Breast", "Thyme"], plus: "Olive Oil" },
+            { name: "Garlic Basil Pasta", needs: ["Pasta", "Garlic"], plus: "Fresh Basil" },
+            { name: "Zucchini Salsa Noodles", needs: ["Zucchini", "Tomato"], plus: "Olive Oil" },
+            { name: "Eggplant & Beef Stir-fry", needs: ["Eggplant", "Ground Beef"], plus: "Soy Sauce" }
         ];
 
         function checkRecipes() {
@@ -53,15 +61,14 @@
             const nameEl = document.getElementById('recipe-name');
             const suggestEl = document.getElementById('recipe-suggestion');
 
-            // 1つでも一致すれば提案するように変更
             const match = recipes.find(r => r.needs.some(n => checked.includes(n)));
 
             if (match) {
                 nameEl.innerText = "Try: " + match.name;
-                suggestEl.innerText = "If you have " + match.needs.join(", ") + ", adding " + match.plus + " makes it a great meal!";
+                suggestEl.innerText = "If you have " + match.needs.join(", ") + ", adding [" + match.plus + "] makes it perfect!";
                 resultDiv.style.display = 'block';
             } else {
-                alert("Try selecting more items!");
+                alert("Try selecting more items from your fridge!");
             }
         }
     </script>
