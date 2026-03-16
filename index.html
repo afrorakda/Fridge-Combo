@@ -5,47 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fridge Combo - Smart Cooking</title>
     <style>
-        body { font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; }
+        body { font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        h1 { text-align: center; color: #1a73e8; }
         input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; }
-        .result-box { margin-top: 20px; padding: 15px; background: #f0f4f8; border-radius: 8px; display: none; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .result-box { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e8eaed; display: none; }
+        .ad-space { margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px; text-align: center; font-size: 14px; }
     </style>
 </head>
 <body>
     <h1>Fridge Combo</h1>
-    <p>Enter ingredients (e.g., Beef, Onion):</p>
+    <p>Enter ingredients (e.g., Beef, Tomato):</p>
     
-    <input type="text" id="ingredients" placeholder="Beef, Onion, Tomato...">
-    <button onclick="findRecipes()">Find Recipes</button>
+    <input type="text" id="ingredients" placeholder="Beef, Tomato, Garlic...">
+    <button onclick="findRecipes()">Find Ideas</button>
 
     <div id="result" class="result-box">
-        <h3 id="r-name"></h3>
+        <h2 id="r-name" style="margin-top:0;"></h2>
         <p id="r-desc"></p>
-        <a href="#" id="affiliate-link">Get tools here</a>
+        <div class="ad-space">
+            <a href="#" id="affiliate-link" target="_blank">Get professional kitchen tools here</a>
+        </div>
     </div>
 
     <script>
         const recipes = [
-            { name: "Steak & Onions", needs: ["Beef", "Onion"], plus: "Black Pepper" },
-            { name: "Herb Poached Chicken", needs: ["Chicken", "Thyme"], plus: "Olive Oil" }
+            { name: "Herb Poached Chicken", needs: ["chicken", "thyme"], plus: "Olive Oil" },
+            { name: "Garlic Basil Pasta", needs: ["pasta", "garlic"], plus: "Fresh Basil" },
+            { name: "Zucchini Salsa Noodles", needs: ["zucchini", "tomato"], plus: "Olive Oil" },
+            { name: "Eggplant & Beef Stir-fry", needs: ["eggplant", "beef"], plus: "Soy Sauce" }
         ];
 
         function findRecipes() {
             const input = document.getElementById('ingredients').value.toLowerCase();
             const resultDiv = document.getElementById('result');
             
-            // 入力された文字を配列に変換
-            const inputArr = input.split(',').map(item => item.trim());
-            
             // どれか1つでも材料が一致するレシピを探す
-            const match = recipes.find(r => r.needs.some(n => input.includes(n.toLowerCase())));
+            const match = recipes.find(r => r.needs.some(n => input.includes(n)));
 
             if (match) {
                 document.getElementById('r-name').innerText = "Try: " + match.name;
-                document.getElementById('r-desc').innerText = "Add [" + match.plus + "] for extra flavor!";
+                document.getElementById('r-desc').innerText = "If you have those, adding [" + match.plus + "] makes it perfect!";
                 resultDiv.style.display = 'block';
             } else {
-                alert("No recipes found! Try other ingredients.");
+                alert("No recipe found! Try other ingredients.");
             }
         }
     </script>
