@@ -1,73 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fridge Combo - Smart Cooking</title>
+    <title>Fridge Combo | 在庫から献立検索</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
-        h1 { text-align: center; color: #1a73e8; margin-bottom: 30px; }
-        input { width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; margin-bottom: 15px; }
-        .button-group { display: flex; flex-direction: column; gap: 10px; }
-        .btn-find { padding: 18px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .btn-clear { padding: 12px; background: #f1f3f4; color: #5f6368; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; }
-        .result-box { margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px solid #e8eaed; display: none; text-align: center; }
-        #r-name { font-size: 24px; margin: 0 0 10px 0; color: #1a73e8; }
-        .btn-copy { display: inline-block; padding: 8px 16px; background: #fff; color: #1a73e8; border: 1px solid #1a73e8; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
-        #r-desc { font-size: 15px; color: #5f6368; margin-top: 10px; border-top: 1px solid #eee; padding-top: 15px; }
-        .ad-space { margin-top: 20px; font-size: 14px; font-weight: bold; }
-        .ad-space a { color: #d32f2f; text-decoration: underline; }
+        body { font-family: -apple-system, sans-serif; background-color: #fff9e6; display: flex; justify-content: center; padding: 20px; margin: 0; color: #444; }
+        .container { width: 100%; max-width: 400px; text-align: center; }
+        h1 { color: #f39c12; font-size: 1.8rem; margin-bottom: 5px; }
+        .subtitle { font-size: 0.85rem; color: #888; margin-bottom: 20px; }
+        
+        /* 入力エリア */
+        .input-box { width: 100%; padding: 15px; border: 2px solid #f39c12; border-radius: 12px; box-sizing: border-box; font-size: 16px; margin-bottom: 10px; outline: none; }
+        .example { font-size: 0.75rem; color: #999; margin-bottom: 15px; text-align: left; padding-left: 5px; }
+
+        /* ボタン */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { padding: 15px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-find { grid-column: span 2; background-color: #f39c12; color: white; margin-bottom: 5px; }
+        .btn-find:active { background-color: #e67e22; transform: scale(0.98); }
+        .btn-clear { background-color: #ddd; color: #666; }
+
+        /* 結果表示 */
+        #result-area { margin-top: 25px; text-align: left; }
+        .recipe-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .recipe-name { font-weight: bold; color: #e67e22; display: block; margin-bottom: 5px; }
+        .match-tag { font-size: 0.7rem; background: #2ecc71; color: white; padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
+        .no-result { color: #999; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
+
+<div class="container">
     <h1>Fridge Combo</h1>
-    <p><b>What's in your fridge?</b></p>
-    <input type="text" id="ingredients" placeholder="e.g., Chicken, Onion, Pasta">
-    <div class="button-group">
-        <button class="btn-find" onclick="findRecipes()">Find Recipes</button>
-        <button class="btn-clear" onclick="clearAll()">Clear Input</button>
+    <p class="subtitle">冷蔵庫にあるものを入力してね</p>
+
+    <input type="text" id="ingredient-input" class="input-box" placeholder="beef, potato, onion...">
+    <div class="example">※材料をカンマ（ , ）区切りで入れてね</div>
+    
+    <div class="btn-group">
+        <button class="btn-find" onclick="findRecipes()">何が作れる？</button>
+        <button class="btn-clear" onclick="clearAll()">クリア</button>
     </div>
-    <div id="result" class="result-box">
-        <h2 id="r-name"></h2>
-        <button class="btn-copy" onclick="copyRecipeName()">📋 Copy Name</button>
-        <p id="r-desc"></p>
-        <div class="ad-space">
-            <a href="https://www.amazon.com/b?node=284507&tag=fridgecombo24-20" target="_blank">🛒 Get the Best Kitchen Tools on Amazon</a>
-        </div>
-    </div>
-    <script>
-        const recipes = [
-            { name: "Herb Poached Chicken", needs: ["chicken", "thyme"], plus: "Olive Oil" },
-            { name: "Garlic Basil Pasta", needs: ["pasta", "garlic"], plus: "Fresh Basil" },
-            { name: "Zucchini Salsa Noodles", needs: ["zucchini", "tomato"], plus: "Olive Oil" },
-            { name: "Eggplant & Beef Stir-fry", needs: ["eggplant", "beef"], plus: "Soy Sauce" }
-        ];
-        function findRecipes() {
-            const input = document.getElementById('ingredients').value.toLowerCase();
-            const resultDiv = document.getElementById('result');
-            if (!input.trim()) return;
-            const match = recipes.find(r => r.needs.some(n => input.includes(n)));
-            if (match) {
-                document.getElementById('r-name').innerText = match.name; 
-                document.getElementById('r-desc').innerText = "If you have those, adding [" + match.plus + "] makes it perfect!";
-                resultDiv.style.display = 'block';
-                resultDiv.scrollIntoView({ behavior: 'smooth' });
-            } else { alert("No recipe found!"); }
+
+    <div id="result-area"></div>
+</div>
+
+<script>
+    let menuPool = [];
+
+    // ページが開いた時に menu.json を読み込む
+    window.onload = async () => {
+        try {
+            const response = await fetch('menu.json');
+            menuPool = await response.json();
+            console.log("Menu pool loaded:", menuPool.length, "items");
+        } catch (error) {
+            console.error("Menu load failed:", error);
         }
-        function copyRecipeName() {
-            const text = document.getElementById('r-name').innerText;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    const btn = document.querySelector('.btn-copy');
-                    btn.innerText = "✅ Copied!";
-                    setTimeout(() => { btn.innerText = "📋 Copy Name"; }, 2000);
-                });
-            }
+    };
+
+    function clearAll() {
+        document.getElementById('ingredient-input').value = '';
+        document.getElementById('result-area').innerHTML = '';
+    }
+
+    function findRecipes() {
+        const input = document.getElementById('ingredient-input').value.toLowerCase();
+        const output = document.getElementById('result-area');
+        
+        if (!input) return;
+
+        // 入力を配列にする (beef, potato -> ["beef", "potato"])
+        const myStock = input.split(',').map(item => item.trim()).filter(item => item !== "");
+        
+        // メニュープールから、持ってる材料で作れるものを探す
+        const matches = menuPool.filter(recipe => {
+            // レシピに必要な材料が、自分の在庫に全部含まれているかチェック
+            return recipe.ingredients.every(needed => myStock.includes(needed));
+        });
+
+        // 画面に表示
+        if (matches.length > 0) {
+            output.innerHTML = matches.map(r => `
+                <div class="recipe-card">
+                    <span class="recipe-name">🍳 ${r.name} <span class="match-tag">材料バッチリ！</span></span>
+                    <small style="color:#aaa">必要：${r.ingredients.join(', ')}</small>
+                </div>
+            `).join('');
+        } else {
+            output.innerHTML = '<div class="no-result">うーん、その材料だけだと<br>作れるメニューがまだ登録されてないみたい。</div>';
         }
-        function clearAll() {
-            document.getElementById('ingredients').value = "";
-            document.getElementById('result').style.display = 'none';
-        }
-    </script>
+    }
+</script>
+
 </body>
 </html>
