@@ -1,0 +1,17 @@
+[
+  { "name": "Mac 'n' Cheese", "ingredients": ["macaroni", "cheese", "milk"] },
+  { "name": "Zucchini Noodles (Zoodles)", "ingredients": ["zucchini", "garlic", "olive oil"] },
+  { "name": "Spaghetti Aglio e Olio", "ingredients": ["pasta", "garlic", "olive oil", "chili"] },
+  { "name": "Classic Burger", "ingredients": ["ground beef", "bun", "lettuce", "onion"] },
+  { "name": "Hamburger Steak", "ingredients": ["ground beef", "onion", "egg"] },
+  { "name": "Fried Chicken (Karaage style)", "ingredients": ["chicken", "soy sauce", "ginger", "flour"] },
+  { "name": "Baked Potato", "ingredients": ["potato", "butter", "cheese", "sour cream"] },
+  { "name": "Baked Chicken Thighs", "ingredients": ["chicken", "garlic", "rosemary", "olive oil"] },
+  { "name": "Tuna Melt", "ingredients": ["tuna", "mayonnaise", "bread", "cheese"] },
+  { "name": "Grilled Cheese Sandwich", "ingredients": ["bread", "butter", "cheese"] },
+  { "name": "Chicken Stir-fry", "ingredients": ["chicken", "broccoli", "soy sauce", "garlic"] },
+  { "name": "Scrambled Eggs on Toast", "ingredients": ["egg", "milk", "butter", "bread"] },
+  { "name": "Quesadilla", "ingredients": ["tortilla", "cheese", "chicken", "onion"] },
+  { "name": "Beef Tacos", "ingredients": ["ground beef", "tortilla", "lettuce", "tomato"] },
+  { "name": "Caesar Salad", "ingredients": ["lettuce", "croutons", "parmesan", "chicken"] }
+]
