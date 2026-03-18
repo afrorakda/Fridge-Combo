@@ -5,48 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fridge Combo | Minimalist Idea Generator</title>
     <style>
-        /* Base Design - Minimalist & Clean */
+        /* Base Design */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; }
         .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; }
         
         h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 25px 0 5px; }
         .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 35px; }
         
-        /* Input Area with Clear Button */
+        /* Input Area */
         .input-group { position: relative; margin-bottom: 18px; }
         .input-box { width: 100%; padding: 18px 50px 18px 18px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
         .input-box:focus { border-color: #111; }
         
-        /* Clear Button (The "X") */
         .btn-clear-inner { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #ccc; cursor: pointer; display: none; padding: 0; }
 
-        /* Main Inspire Button */
-        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-bottom: 30px; -webkit-appearance: none; }
+        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 30px; -webkit-appearance: none; }
         .btn-main:active { opacity: 0.8; }
 
-        /* Results Cards Area */
+        /* Results */
         #result-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
-        .card { background: #f9f9f9; padding: 22px; border-radius: 14px; border: 1px solid #eee; position: relative; transition: 0.2s; animation: fadeIn 0.4s ease; }
+        .card { background: #f9f9f9; padding: 22px; border-radius: 14px; border: 1px solid #eee; position: relative; animation: fadeIn 0.4s ease; }
         
         .name { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 12px; cursor: pointer; color: #111; letter-spacing: -0.3px; }
         .name:hover { opacity: 0.7; }
 
-        /* Tags for Time and Vibe */
         .tag-group { display: flex; gap: 6px; margin-bottom: 18px; }
-        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; background: #e0e0e0; color: #444; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; background: #e0e0e0; color: #444; font-weight: 700; text-transform: uppercase; }
         .tag-vibe { background: #111; color: #fff; }
 
-        /* Amazon Link */
-        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; border-top: 1px solid #eee; padding-top: 15px; width: 100%; }
+        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; font-weight: 500; border-top: 1px solid #eee; padding-top: 15px; width: 100%; display: block; }
         
-        /* Shuffle Link */
         #shuffle-btn { background: none; border: none; color: #111; font-size: 0.95rem; cursor: pointer; margin: 35px auto; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 700; }
         
-        /* Footer and Toast */
-        footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; color: #aaa; line-height: 1.8; letter-spacing: 0.5px; }
-        #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; font-weight: 500; }
+        footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; color: #aaa; line-height: 1.8; }
+        #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
 
-        /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -57,7 +50,7 @@
     <p class="subtitle">Just one (or more) ingredient for tonight's dinner idea.</p>
 
     <div class="input-group">
-        <input type="text" id="ingredient-input" class="input-box" placeholder="beef, onion, potato" onkeypress="if(event.key==='Enter') findRecipes()" oninput="toggleClearBtn()">
+        <input type="text" id="ingredient-input" class="input-box" placeholder="beef onion potato" onkeypress="if(event.key==='Enter') findRecipes()" oninput="toggleClearBtn()">
         <button id="clear-btn-inner" class="btn-clear-inner" onclick="clearAll()">✕</button>
     </div>
     
@@ -78,7 +71,6 @@
     let menuPool = [];
     let currentMatches = [];
 
-    // JSONデータの読み込み
     window.onload = async () => {
         try {
             const response = await fetch('menu.json');
@@ -99,35 +91,33 @@
         toggleClearBtn();
     }
 
-    // 検索メインロジック
     function findRecipes() {
         const inputRaw = document.getElementById('ingredient-input').value.toLowerCase().trim();
         if (!inputRaw) return;
 
-        // カンマ区切りをバラバラにして配列にする
-        const inputKeywords = inputRaw.split(',').map(item => item.trim()).filter(item => item !== "");
+        // 【改良】カンマでもスペースでも区切れるように調整
+        // カンマをスペースに変換してから、半角スペースで分割
+        const inputKeywords = inputRaw.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
 
-        // いずれかの単語が含まれているレシピを抽出
         currentMatches = menuPool.filter(recipe => {
             const recipeName = recipe.name.toLowerCase();
+            // 名前の中にキーワードが含まれているかチェック
             return inputKeywords.some(keyword => recipeName.includes(keyword));
         });
 
         displayResults();
     }
 
-    // 結果のカード表示
     function displayResults() {
         const output = document.getElementById('result-area');
         const shuffleBtn = document.getElementById('shuffle-btn');
         
         if (currentMatches.length === 0) {
-            output.innerHTML = '<div style="color:#999; text-align:center; padding:30px; font-size:0.95rem;">No ideas found for that ingredient. Try simple one.</div>';
+            output.innerHTML = '<div style="color:#999; text-align:center; padding:30px;">No ideas found. Try another word.</div>';
             shuffleBtn.style.display = 'none';
             return;
         }
 
-        // ランダムに3つ選出
         const shuffled = [...currentMatches].sort(() => 0.5 - Math.random());
         const pickup = shuffled.slice(0, 3);
 
@@ -145,7 +135,6 @@
         shuffleBtn.style.display = currentMatches.length > 3 ? 'block' : 'none';
     }
 
-    // コピー機能
     async function copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
