@@ -6,38 +6,39 @@
     <title>Fridge Combo | Minimalist Idea Generator</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; }
-        .container { width: 100%; max-width: 380px; text-align: left; }
+        .container { width: 100%; max-width: 380px; }
         
         h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; margin: 20px 0 5px; }
         .subtitle { font-size: 0.8rem; color: #666; margin-bottom: 30px; }
         
-        /* Input Area with Clear Button */
+        /* Input Area */
         .input-group { position: relative; margin-bottom: 15px; }
-        .input-box { width: 100%; padding: 16px 45px 16px 16px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+        .input-box { width: 100%; padding: 16px 45px 16px 16px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; }
         .input-box:focus { border-color: #111; }
         
-        /* Clear Button (The "X") */
-        .btn-clear-inner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; color: #ccc; cursor: pointer; padding: 0; display: none; }
+        .btn-clear-inner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; color: #ccc; cursor: pointer; display: none; }
         .btn-clear-inner:hover { color: #111; }
 
-        .btn-main { width: 100%; padding: 16px; background-color: #111; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-bottom: 25px; -webkit-appearance: none; }
-        .btn-main:active { background-color: #333; }
+        .btn-main { width: 100%; padding: 16px; background-color: #111; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 25px; }
 
-        #result-area { display: flex; flex-direction: column; gap: 12px; }
-        .recipe-card { background: #f9f9f9; padding: 18px; border-radius: 8px; border: 1px solid #eee; position: relative; }
+        /* Result Cards */
+        #result-area { display: flex; flex-direction: column; gap: 15px; }
+        .recipe-card { background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px solid #eee; transition: 0.2s; animation: fadeIn 0.4s ease; }
         
-        .recipe-name { font-size: 1.1rem; font-weight: 700; display: block; margin-bottom: 8px; cursor: pointer; color: #111; }
-        .recipe-name:hover { opacity: 0.7; }
+        .recipe-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .recipe-name { font-size: 1.15rem; font-weight: 700; cursor: pointer; color: #111; flex: 1; }
+        
+        .tag-group { display: flex; gap: 6px; margin-bottom: 15px; }
+        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; background: #e0e0e0; color: #444; font-weight: 600; text-transform: uppercase; }
+        .tag-vibe { background: #111; color: #fff; }
 
-        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; display: inline-flex; align-items: center; }
+        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; font-weight: 500; border-top: 1px solid #eee; padding-top: 10px; display: block; }
         .amazon-link:hover { text-decoration: underline; }
         
         #shuffle-btn { background: none; border: none; color: #111; font-size: 0.85rem; cursor: pointer; margin-top: 25px; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 600; }
-        
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 100; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .recipe-card { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -67,10 +68,9 @@
         try {
             const response = await fetch('menu.json');
             menuPool = await response.json();
-        } catch (e) { console.error("Menu Pool Error"); }
+        } catch (e) { console.error("Data load failed"); }
     };
 
-    // 入力状況に応じて✕ボタンを出す
     function toggleClearBtn() {
         const input = document.getElementById('ingredient-input');
         const clearBtn = document.getElementById('clear-btn-inner');
@@ -87,20 +87,15 @@
     function findRecipes() {
         const input = document.getElementById('ingredient-input').value.toLowerCase().trim();
         if (!input) return;
-
-        currentMatches = menuPool.filter(recipe => 
-            recipe.ingredients.some(ing => ing.includes(input))
-        );
-
+        currentMatches = menuPool.filter(r => r.ingredients.some(i => i.includes(input)));
         displayResults();
     }
 
     function displayResults() {
         const output = document.getElementById('result-area');
         const shuffleBtn = document.getElementById('shuffle-btn');
-        
         if (currentMatches.length === 0) {
-            output.innerHTML = '<div style="color:#999; text-align:center; padding:20px;">No ideas found.</div>';
+            output.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">No ideas for this one yet.</div>';
             shuffleBtn.style.display = 'none';
             return;
         }
@@ -110,8 +105,14 @@
 
         output.innerHTML = pickup.map(r => `
             <div class="recipe-card">
-                <span class="recipe-name" onclick="copyToClipboard('${r.name}')">${r.name}</span>
-                <a href="https://www.amazon.com/s?k=${r.name}+ingredients" target="_blank" class="amazon-link">🛒 Check Ingredients on Amazon</a>
+                <div class="recipe-header">
+                    <span class="recipe-name" onclick="copyToClipboard('${r.name}')">${r.name}</span>
+                </div>
+                <div class="tag-group">
+                    <span class="tag">${r.time || '15 min'}</span>
+                    <span class="tag tag-vibe">${r.vibe || 'Tasty'}</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=${r.name}+kit" target="_blank" class="amazon-link">🛒 Shop Ingredients on Amazon</a>
             </div>
         `).join('');
         
