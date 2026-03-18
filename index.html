@@ -5,38 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fridge Combo | Minimal Idea Generator</title>
     <style>
-        /* Minimalist & Modern CSS */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; }
-        .container { width: 100%; max-width: 380px; text-align: left; position: relative; }
+        .container { width: 100%; max-width: 380px; text-align: left; }
         
         h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; margin: 20px 0 5px; }
-        .subtitle { font-size: 0.8rem; color: #666; margin-bottom: 30px; font-weight: 400; }
+        .subtitle { font-size: 0.8rem; color: #666; margin-bottom: 30px; }
         
-        /* Input Area with Clear Button */
         .input-group { position: relative; margin-bottom: 15px; }
-        .input-box { width: 100%; padding: 16px 45px 16px 16px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+        .input-box { width: 100%; padding: 16px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; }
         .input-box:focus { border-color: #111; }
-        .btn-clear-inner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; color: #ccc; cursor: pointer; padding: 0; display: none; }
-        .btn-clear-inner:hover { color: #111; }
 
-        /* Main Button */
-        .btn-main { width: 100%; padding: 16px; background-color: #111; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-bottom: 25px; -webkit-appearance: none; }
-        .btn-main:active { background-color: #333; }
+        .btn-main { width: 100%; padding: 16px; background-color: #111; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 25px; }
 
-        /* Results Area */
-        #result-area { display: flex; flex-direction: column; gap: 10px; }
-        .recipe-item { position: relative; background: #f9f9f9; padding: 18px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; color: #111; border: 1px solid #eee; cursor: pointer; transition: background 0.2s; animation: fadeIn 0.3s ease; }
-        .recipe-item:hover { background: #f0f0f0; }
-        .recipe-item::after { content: 'Tap to copy'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: #aaa; font-weight: 400; opacity: 0; transition: opacity 0.2s; }
-        .recipe-item:hover::after { opacity: 1; }
-
-        /* Shuffle Link */
-        #shuffle-btn { background: none; border: none; color: #111; font-size: 0.85rem; cursor: pointer; margin-top: 20px; padding: 0; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 600; }
+        #result-area { display: flex; flex-direction: column; gap: 15px; }
+        .recipe-card { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; position: relative; transition: 0.2s; }
+        .recipe-card:hover { border-color: #bbb; }
         
-        /* Toast Notification */
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 100; }
+        .recipe-name { font-size: 1.1rem; font-weight: 700; display: block; margin-bottom: 8px; cursor: pointer; }
+        
+        /* Amazon Link Style */
+        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; display: inline-flex; align-items: center; font-weight: 500; }
+        .amazon-link:hover { text-decoration: underline; }
+        .amazon-link::before { content: '🛒 '; margin-right: 4px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #shuffle-btn { background: none; border: none; color: #111; font-size: 0.85rem; cursor: pointer; margin-top: 25px; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 600; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; }
     </style>
 </head>
 <body>
@@ -46,8 +39,7 @@
     <p class="subtitle">Enter one ingredient for tonight's dinner idea.</p>
 
     <div class="input-group">
-        <input type="text" id="ingredient-input" class="input-box" placeholder="e.g. beef" onkeypress="if(event.key==='Enter') findRecipes()" oninput="toggleClearBtn()">
-        <button id="clear-btn-inner" class="btn-clear-inner" onclick="clearAll()">✕</button>
+        <input type="text" id="ingredient-input" class="input-box" placeholder="e.g. beef" onkeypress="if(event.key==='Enter') findRecipes()">
     </div>
     
     <button class="btn-main" onclick="findRecipes()">Inspire Me</button>
@@ -66,40 +58,21 @@
         try {
             const response = await fetch('menu.json');
             menuPool = await response.json();
-        } catch (e) { console.error("Menu Load Failed"); }
+        } catch (e) { console.error("Load Error"); }
     };
-
-    function toggleClearBtn() {
-        const input = document.getElementById('ingredient-input');
-        const clearBtn = document.getElementById('clear-btn-inner');
-        clearBtn.style.display = input.value.length > 0 ? 'block' : 'none';
-    }
-
-    function clearAll() {
-        document.getElementById('ingredient-input').value = '';
-        document.getElementById('result-area').innerHTML = '';
-        document.getElementById('shuffle-btn').style.display = 'none';
-        toggleClearBtn();
-    }
 
     function findRecipes() {
         const input = document.getElementById('ingredient-input').value.toLowerCase().trim();
         if (!input) return;
-
-        currentMatches = menuPool.filter(recipe => 
-            recipe.ingredients.some(ing => ing.includes(input))
-        );
-
+        currentMatches = menuPool.filter(r => r.ingredients.some(i => i.includes(input)));
         displayResults();
     }
 
     function displayResults() {
         const output = document.getElementById('result-area');
         const shuffleBtn = document.getElementById('shuffle-btn');
-        
         if (currentMatches.length === 0) {
-            output.innerHTML = '<div style="color:#999; text-align:center; padding:20px; font-size:0.9rem;">No ideas found for that ingredient.</div>';
-            shuffleBtn.style.display = 'none';
+            output.innerHTML = '<div style="text-align:center; color:#999;">No results.</div>';
             return;
         }
 
@@ -107,7 +80,10 @@
         const pickup = shuffled.slice(0, 3);
 
         output.innerHTML = pickup.map(r => `
-            <div class="recipe-item" onclick="copyToClipboard('${r.name}')">${r.name}</div>
+            <div class="recipe-card">
+                <span class="recipe-name" onclick="copyToClipboard('${r.name}')">${r.name}</span>
+                <a href="https://www.amazon.com/s?k=${r.name}+ingredients" target="_blank" class="amazon-link">Check Ingredients on Amazon</a>
+            </div>
         `).join('');
         
         shuffleBtn.style.display = currentMatches.length > 3 ? 'block' : 'none';
@@ -120,6 +96,5 @@
         setTimeout(() => { toast.style.display = 'none'; }, 2000);
     }
 </script>
-
 </body>
 </html>
