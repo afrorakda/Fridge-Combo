@@ -3,62 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fridge Combo</title>
+    <title>Fridge Combo | Minimalist Idea Generator</title>
     <style>
-        /* Base Design */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; }
-        .container { width: 100%; max-width: 380px; min-height: 95vh; display: flex; flex-direction: column; }
+        /* Base Design - Minimalist & Clean */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; }
         
-        h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin: 20px 0 5px; }
-        .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 30px; }
+        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 25px 0 5px; }
+        .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 35px; }
         
-        /* Input Area */
-        .input-group { position: relative; margin-bottom: 15px; }
-        .input-box { width: 100%; padding: 16px 45px 16px 16px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+        /* Input Area with Clear Button */
+        .input-group { position: relative; margin-bottom: 18px; }
+        .input-box { width: 100%; padding: 18px 50px 18px 18px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
         .input-box:focus { border-color: #111; }
         
-        .btn-clear { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; color: #ccc; cursor: pointer; display: none; padding: 5px; }
+        /* Clear Button (The "X") */
+        .btn-clear-inner { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #ccc; cursor: pointer; display: none; padding: 0; }
 
-        .btn-main { width: 100%; padding: 16px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 25px; -webkit-appearance: none; }
+        /* Main Inspire Button */
+        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-bottom: 30px; -webkit-appearance: none; }
         .btn-main:active { opacity: 0.8; }
 
-        /* Result Cards */
+        /* Results Cards Area */
         #result-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
-        .card { background: #f9f9f9; padding: 20px; border-radius: 14px; border: 1px solid #eee; animation: fadeIn 0.3s ease; }
+        .card { background: #f9f9f9; padding: 22px; border-radius: 14px; border: 1px solid #eee; position: relative; transition: 0.2s; animation: fadeIn 0.4s ease; }
         
-        .name { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; display: block; cursor: pointer; color: #111; }
+        .name { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 12px; cursor: pointer; color: #111; letter-spacing: -0.3px; }
         .name:hover { opacity: 0.7; }
 
-        .tags { display: flex; gap: 6px; margin-bottom: 15px; }
-        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; background: #e0e0e0; color: #444; font-weight: 700; text-transform: uppercase; }
+        /* Tags for Time and Vibe */
+        .tag-group { display: flex; gap: 6px; margin-bottom: 18px; }
+        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; background: #e0e0e0; color: #444; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
         .tag-vibe { background: #111; color: #fff; }
 
-        .amazon { font-size: 0.75rem; color: #0066c0; text-decoration: none; font-weight: 500; display: inline-block; border-top: 1px solid #eee; width: 100%; pt: 12px; margin-top: 5px; padding-top: 10px; }
+        /* Amazon Link */
+        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; border-top: 1px solid #eee; padding-top: 15px; width: 100%; }
+        
+        /* Shuffle Link */
+        #shuffle-btn { background: none; border: none; color: #111; font-size: 0.95rem; cursor: pointer; margin: 35px auto; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 700; }
+        
+        /* Footer and Toast */
+        footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; color: #aaa; line-height: 1.8; letter-spacing: 0.5px; }
+        #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; font-weight: 500; }
 
-        #shuffle { background: none; border: none; text-decoration: underline; font-size: 0.9rem; cursor: pointer; display: none; margin: 30px auto; font-weight: 700; color: #111; }
-
-        /* Footer & UI */
-        footer { margin-top: 50px; padding: 25px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.7rem; color: #aaa; line-height: 1.8; letter-spacing: 0.5px; }
-        #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: #fff; padding: 10px 22px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Fridge Combo</h1>
-    <p class="subtitle">Just one ingredient for a dinner idea.</p>
+    <p class="subtitle">Just one (or more) ingredient for tonight's dinner idea.</p>
 
     <div class="input-group">
-        <input type="text" id="in" class="input-box" placeholder="e.g. beef" oninput="toggleCl()" onkeypress="if(event.key==='Enter') find()">
-        <button id="cl" class="btn-clear" onclick="clearIn()">✕</button>
+        <input type="text" id="ingredient-input" class="input-box" placeholder="beef, onion, potato" onkeypress="if(event.key==='Enter') findRecipes()" oninput="toggleClearBtn()">
+        <button id="clear-btn-inner" class="btn-clear-inner" onclick="clearAll()">✕</button>
     </div>
     
-    <button class="btn-main" onclick="find()">Inspire Me</button>
+    <button class="btn-main" onclick="findRecipes()">Inspire Me</button>
 
     <div id="result-area"></div>
-    <button id="shuffle" onclick="show()">Next Ideas →</button>
+    <button id="shuffle-btn" onclick="displayResults()">Next Ideas →</button>
 
     <footer>
         No login / No tracking / Browser only<br>
@@ -69,70 +75,84 @@
 <div id="toast">Copied to clipboard!</div>
 
 <script>
-    let pool = [], matches = [];
+    let menuPool = [];
+    let currentMatches = [];
 
-    // JSON読み込み
+    // JSONデータの読み込み
     window.onload = async () => {
         try {
-            const res = await fetch('menu.json');
-            pool = await res.json();
-        } catch(e) {
-            console.error("Menu failed to load");
-        }
+            const response = await fetch('menu.json');
+            menuPool = await response.json();
+        } catch (e) { console.error("Menu Pool Error"); }
     };
 
-    function toggleCl() {
-        const val = document.getElementById('in').value;
-        document.getElementById('cl').style.display = val ? 'block' : 'none';
+    function toggleClearBtn() {
+        const input = document.getElementById('ingredient-input');
+        const clearBtn = document.getElementById('clear-btn-inner');
+        clearBtn.style.display = input.value.length > 0 ? 'block' : 'none';
     }
 
-    function clearIn() {
-        document.getElementById('in').value = '';
+    function clearAll() {
+        document.getElementById('ingredient-input').value = '';
         document.getElementById('result-area').innerHTML = '';
-        document.getElementById('shuffle').style.display = 'none';
-        toggleCl();
+        document.getElementById('shuffle-btn').style.display = 'none';
+        toggleClearBtn();
     }
 
-    function find() {
-        const val = document.getElementById('in').value.toLowerCase().trim();
-        if(!val) return;
-        // 名前(name)から検索
-        matches = pool.filter(r => r.name.toLowerCase().includes(val));
-        show();
+    // 検索メインロジック
+    function findRecipes() {
+        const inputRaw = document.getElementById('ingredient-input').value.toLowerCase().trim();
+        if (!inputRaw) return;
+
+        // カンマ区切りをバラバラにして配列にする
+        const inputKeywords = inputRaw.split(',').map(item => item.trim()).filter(item => item !== "");
+
+        // いずれかの単語が含まれているレシピを抽出
+        currentMatches = menuPool.filter(recipe => {
+            const recipeName = recipe.name.toLowerCase();
+            return inputKeywords.some(keyword => recipeName.includes(keyword));
+        });
+
+        displayResults();
     }
 
-    function show() {
-        const out = document.getElementById('result-area');
-        const shf = document.getElementById('shuffle');
+    // 結果のカード表示
+    function displayResults() {
+        const output = document.getElementById('result-area');
+        const shuffleBtn = document.getElementById('shuffle-btn');
         
-        if(matches.length === 0) {
-            out.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">No ideas found for that.</p>';
-            shf.style.display = 'none';
+        if (currentMatches.length === 0) {
+            output.innerHTML = '<div style="color:#999; text-align:center; padding:30px; font-size:0.95rem;">No ideas found for that ingredient. Try simple one.</div>';
+            shuffleBtn.style.display = 'none';
             return;
         }
 
-        const res = [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
-        out.innerHTML = res.map(r => `
+        // ランダムに3つ選出
+        const shuffled = [...currentMatches].sort(() => 0.5 - Math.random());
+        const pickup = shuffled.slice(0, 3);
+
+        output.innerHTML = pickup.map(r => `
             <div class="card">
-                <span class="name" onclick="copy('${r.name}')">${r.name}</span>
-                <div class="tags">
+                <span class="name" onclick="copyToClipboard('${r.name}')">${r.name}</span>
+                <div class="tag-group">
                     <span class="tag">${r.time}</span>
                     <span class="tag tag-vibe">${r.vibe}</span>
                 </div>
-                <a href="https://www.amazon.com/s?k=${r.name}+kit" target="_blank" class="amazon">🛒 Shop on Amazon</a>
+                <a href="https://www.amazon.com/s?k=${r.name}+kit" target="_blank" class="amazon-link">🛒 Shop on Amazon</a>
             </div>
         `).join('');
         
-        shf.style.display = matches.length > 3 ? 'block' : 'none';
+        shuffleBtn.style.display = currentMatches.length > 3 ? 'block' : 'none';
     }
 
-    async function copy(t) {
+    // コピー機能
+    async function copyToClipboard(text) {
         try {
-            await navigator.clipboard.writeText(t);
-            const s = document.getElementById('toast');
-            s.style.display = 'block';
-            setTimeout(() => { s.style.display = 'none'; }, 1500);
-        } catch(e) {}
+            await navigator.clipboard.writeText(text);
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 1500);
+        } catch (err) {}
     }
 </script>
 
