@@ -1,63 +1,91 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fridge Combo | 献立ガチャ</title>
+    <title>Fridge Combo | Minimal Idea Generator</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background-color: #fffaf0; display: flex; justify-content: center; padding: 20px; margin: 0; color: #444; }
-        .container { width: 100%; max-width: 400px; text-align: center; }
-        h1 { color: #d35400; font-size: 1.8rem; margin: 20px 0 5px; }
-        .subtitle { font-size: 0.85rem; color: #888; margin-bottom: 30px; }
+        /* Minimalist & Modern CSS */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; }
+        .container { width: 100%; max-width: 380px; text-align: left; position: relative; }
         
-        /* 入力ボックス */
-        .input-box { width: 100%; padding: 18px; border: 3px solid #f39c12; border-radius: 50px; box-sizing: border-box; font-size: 18px; margin-bottom: 20px; outline: none; text-align: center; box-shadow: 0 4px 0 #e67e22; }
+        h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; margin: 20px 0 5px; }
+        .subtitle { font-size: 0.8rem; color: #666; margin-bottom: 30px; font-weight: 400; }
+        
+        /* Input Area with Clear Button */
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-box { width: 100%; padding: 16px 45px 16px 16px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+        .input-box:focus { border-color: #111; }
+        .btn-clear-inner { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; color: #ccc; cursor: pointer; padding: 0; display: none; }
+        .btn-clear-inner:hover { color: #111; }
 
-        /* メインボタン */
-        .btn-main { width: 100%; padding: 18px; background-color: #f39c12; color: white; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #d35400; margin-bottom: 20px; }
-        .btn-main:active { transform: translateY(3px); box-shadow: 0 1px 0 #d35400; }
+        /* Main Button */
+        .btn-main { width: 100%; padding: 16px; background-color: #111; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-bottom: 25px; -webkit-appearance: none; }
+        .btn-main:active { background-color: #333; }
 
-        /* 結果エリア */
-        #result-area { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
-        .recipe-item { background: white; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; color: #2c3e50; border: 1px solid #ddd; box-shadow: 0 2px 8px rgba(0,0,0,0.05); animation: fadeIn 0.3s ease; }
+        /* Results Area */
+        #result-area { display: flex; flex-direction: column; gap: 10px; }
+        .recipe-item { position: relative; background: #f9f9f9; padding: 18px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; color: #111; border: 1px solid #eee; cursor: pointer; transition: background 0.2s; animation: fadeIn 0.3s ease; }
+        .recipe-item:hover { background: #f0f0f0; }
+        .recipe-item::after { content: 'Tap to copy'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: #aaa; font-weight: 400; opacity: 0; transition: opacity 0.2s; }
+        .recipe-item:hover::after { opacity: 1; }
 
-        /* シャッフルボタン（最初は隠しておく） */
-        #shuffle-btn { width: 100%; padding: 12px; background-color: #34495e; color: white; border: none; border-radius: 12px; font-size: 14px; cursor: pointer; margin-top: 15px; display: none; }
+        /* Shuffle Link */
+        #shuffle-btn { background: none; border: none; color: #111; font-size: 0.85rem; cursor: pointer; margin-top: 20px; padding: 0; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 600; }
+        
+        /* Toast Notification */
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 100; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Fridge Combo</h1>
-    <p class="subtitle">その材料から、今夜のヒントを提案</p>
+    <p class="subtitle">Enter one ingredient for tonight's dinner idea.</p>
 
-    <input type="text" id="ingredient-input" class="input-box" placeholder="例：beef" onkeypress="if(event.key==='Enter') findRecipes()">
+    <div class="input-group">
+        <input type="text" id="ingredient-input" class="input-box" placeholder="e.g. beef" onkeypress="if(event.key==='Enter') findRecipes()" oninput="toggleClearBtn()">
+        <button id="clear-btn-inner" class="btn-clear-inner" onclick="clearAll()">✕</button>
+    </div>
     
-    <button class="btn-main" onclick="findRecipes()">献立をひらめく！</button>
+    <button class="btn-main" onclick="findRecipes()">Inspire Me</button>
 
     <div id="result-area"></div>
-    <button id="shuffle-btn" onclick="displayResults()">他のアイデアを見る (Shuffle)</button>
+    <button id="shuffle-btn" onclick="displayResults()">Next Ideas →</button>
 </div>
+
+<div id="toast">Copied to clipboard</div>
 
 <script>
     let menuPool = [];
     let currentMatches = [];
 
-    // 起動時に menu.json を読み込む
     window.onload = async () => {
         try {
             const response = await fetch('menu.json');
             menuPool = await response.json();
-        } catch (e) { console.error("Menu Pool Error"); }
+        } catch (e) { console.error("Menu Load Failed"); }
     };
+
+    function toggleClearBtn() {
+        const input = document.getElementById('ingredient-input');
+        const clearBtn = document.getElementById('clear-btn-inner');
+        clearBtn.style.display = input.value.length > 0 ? 'block' : 'none';
+    }
+
+    function clearAll() {
+        document.getElementById('ingredient-input').value = '';
+        document.getElementById('result-area').innerHTML = '';
+        document.getElementById('shuffle-btn').style.display = 'none';
+        toggleClearBtn();
+    }
 
     function findRecipes() {
         const input = document.getElementById('ingredient-input').value.toLowerCase().trim();
         if (!input) return;
 
-        // 入力された材料が「含まれている」レシピを抽出
         currentMatches = menuPool.filter(recipe => 
             recipe.ingredients.some(ing => ing.includes(input))
         );
@@ -70,20 +98,26 @@
         const shuffleBtn = document.getElementById('shuffle-btn');
         
         if (currentMatches.length === 0) {
-            output.innerHTML = '<div style="color:#999">その材料のヒントはまだないみたい。</div>';
+            output.innerHTML = '<div style="color:#999; text-align:center; padding:20px; font-size:0.9rem;">No ideas found for that ingredient.</div>';
             shuffleBtn.style.display = 'none';
             return;
         }
 
-        // シャッフル（配列をランダムに並び替え）
         const shuffled = [...currentMatches].sort(() => 0.5 - Math.random());
-        // 先頭3つを取り出す
         const pickup = shuffled.slice(0, 3);
 
-        output.innerHTML = pickup.map(r => `<div class="recipe-item">✨ ${r.name}</div>`).join('');
+        output.innerHTML = pickup.map(r => `
+            <div class="recipe-item" onclick="copyToClipboard('${r.name}')">${r.name}</div>
+        `).join('');
         
-        // 候補が3つ以上ある場合のみシャッフルボタンを表示
         shuffleBtn.style.display = currentMatches.length > 3 ? 'block' : 'none';
+    }
+
+    async function copyToClipboard(text) {
+        await navigator.clipboard.writeText(text);
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
     }
 </script>
 
