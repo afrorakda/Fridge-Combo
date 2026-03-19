@@ -26,11 +26,12 @@
         .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; background: #e0e0e0; color: #444; font-weight: 700; }
         .tag-vibe { background: #111; color: #fff; }
         .card-lazy .tag { background: #333; color: #ccc; }
-        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid #eee; padding-top: 15px; width: 100%; display: block; }
+        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid #eee; padding-top: 15px; width: 100%; display: block; font-weight: bold; }
         .card-lazy .amazon-link { color: #aaa; border-top-color: #333; }
         #shuffle-btn { background: none; border: none; color: #111; font-size: 0.95rem; cursor: pointer; margin: 35px auto; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 700; }
         footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; color: #aaa; line-height: 1.8; }
         #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
+        #privacy-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; padding:40px; box-sizing:border-box; overflow-y:auto; text-align: left; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -45,11 +46,29 @@
     <button id="btn" class="btn-main" onclick="find()">Inspire Me</button>
     <div id="result-area"></div>
     <button id="shuffle-btn" onclick="display()">Next Ideas →</button>
+    
     <footer>
-        No login / No tracking / Browser only<br>
-        Fridge Combo © 2026
+        <p>No login / No tracking / Browser only</p>
+        <p style="font-size: 0.6rem; margin: 15px 0; padding: 0 20px;">
+            As an Amazon Associate, [ここにあなたの名前] earns from qualifying purchases.
+        </p>
+        <p><a href="javascript:void(0)" onclick="showPrivacy()" style="color: #aaa; text-decoration: underline;">Privacy Policy</a></p>
+        <p style="margin-top: 20px;">Fridge Combo © 2026</p>
     </footer>
 </div>
+
+<div id="privacy-modal">
+    <div style="max-width: 300px; margin: 0 auto;">
+        <button onclick="hidePrivacy()" style="background:none; border:none; font-size:24px; cursor:pointer; float:right;">✕</button>
+        <h2 style="font-size: 1.2rem; margin-top:0;">Privacy Policy</h2>
+        <div style="font-size: 0.8rem; line-height: 1.6; color: #444;">
+            <p><strong>1. Data Collection:</strong> This tool operates entirely in your browser. No personal data is collected, tracked, or stored on any server.</p>
+            <p><strong>2. Amazon Associates:</strong> This site participates in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.</p>
+            <p><strong>3. Cookies:</strong> Amazon may use cookies to track clicks and process purchases. Please refer to Amazon's privacy policy for details.</p>
+        </div>
+    </div>
+</div>
+
 <div id="toast">Copied!</div>
 
 <script>
@@ -59,14 +78,11 @@
         "Go to a local Diner. You deserve a break. 🍔",
         "Chinese Takeout is calling your name... 🥡",
         "Netflix and Cereal. No cooking tonight. 🥣",
-        "Just sleep. Dinner is overrated. 💤",
-        "Pizza Delivery. Don't even think about a pan. 🍕"
+        "Just sleep. Dinner is overrated. 💤"
     ];
 
     window.onload = async () => {
         try { pool = await (await fetch('menu.json')).json(); } catch(e) {}
-        
-        // 演出：3秒後にそっと "lazy?" を足す
         setTimeout(() => {
             const input = document.getElementById('in');
             if(!input.value) input.placeholder = "beef, onion, lazy?";
@@ -76,8 +92,6 @@
     function toggleCl() {
         const input = document.getElementById('in');
         document.getElementById('cl').style.display = input.value ? 'block' : 'none';
-        
-        // 演出：lazyと打つとボタンが励ましてくる
         const btn = document.getElementById('btn');
         if(LAZY_WORDS.some(w => input.value.toLowerCase().includes(w))) {
             btn.innerText = "I'll help you...";
@@ -96,25 +110,19 @@
     function find() {
         const val = document.getElementById('in').value.toLowerCase().trim();
         if(!val) return;
-
-        // 深夜1時〜5時の愛の鞭
         const hour = new Date().getHours();
         const isLate = (hour >= 1 && hour < 5);
-
         const keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
         const hasLazy = keywords.some(k => LAZY_WORDS.includes(k)) || isLate;
 
         if (hasLazy) {
-            // お疲れモード：外食1つ ＋ 10分以内メニュー2つ
             const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
             const msg = isLate ? "It's " + hour + " AM. Why are you cooking? Go to sleep. 💤" : ROBO_MSG[Math.floor(Math.random()*ROBO_MSG.length)];
-            
             matches = [
                 { name: msg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
                 quickOnes[0], quickOnes[1]
             ];
         } else {
-            // 通常検索：名前とタグの両方から探す
             matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
         }
         display();
@@ -123,31 +131,41 @@
     function display() {
         const out = document.getElementById('result-area');
         const shf = document.getElementById('shuffle-btn');
-        
         if(matches.length === 0) {
-            const snarky = ["Your fridge is an empty abyss. 🥚", "Even a chef couldn't help with that. 👨‍🍳", "Try buying some actual food first."];
-            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${snarky[Math.floor(Math.random()*snarky.length)}</div>`;
+            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">Your fridge is an empty abyss. 🥚</div>`;
             shf.style.display = 'none';
             return;
         }
-
         const isSpecial = matches[0]?.isSpecial;
         const pickup = isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
 
-        out.innerHTML = pickup.map((r, i) => `
-            <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
-                <span class="name" onclick="copy('${r.name}')">${r.name}</span>
-                <div class="tag-group">
-                    <span class="tag">${r.time}</span>
-                    <span class="tag tag-vibe">${r.vibe}</span>
+        out.innerHTML = pickup.map(r => {
+            // ここがアフィリエイトリンクの判定ロジック
+            let link = `https://www.amazon.com/s?k=${r.name}+kit`; // 基本は検索結果
+            let linkText = "🛒 Shop ingredients on Amazon";
+
+            // もし「特定のリンク」がデータにあればそれを、なければ検索
+            if(r.affiliate_url) {
+                link = r.affiliate_url;
+                linkText = "🚀 Get this exact Kit / Spice";
+            }
+
+            return `
+                <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
+                    <span class="name" onclick="copy('${r.name}')">${r.name}</span>
+                    <div class="tag-group">
+                        <span class="tag">${r.time}</span>
+                        <span class="tag tag-vibe">${r.vibe}</span>
+                    </div>
+                    ${r.isSpecial ? '' : `<a href="${link}" target="_blank" class="amazon-link">${linkText}</a>`}
                 </div>
-                ${r.isSpecial ? '' : `<a href="https://www.amazon.com/s?k=${r.name}+kit" target="_blank" class="amazon-link">🛒 Shop on Amazon</a>`}
-            </div>
-        `).join('');
-        
+            `;
+        }).join('');
         shf.style.display = (!isSpecial && matches.length > 3) ? 'block' : 'none';
     }
 
+    function showPrivacy() { document.getElementById('privacy-modal').style.display = 'block'; }
+    function hidePrivacy() { document.getElementById('privacy-modal').style.display = 'none'; }
     async function copy(t) {
         try {
             await navigator.clipboard.writeText(t);
