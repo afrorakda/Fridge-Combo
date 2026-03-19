@@ -28,7 +28,6 @@
         .card-lazy .tag { background: #333; color: #ccc; }
         .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid #eee; padding-top: 15px; width: 100%; display: block; font-weight: bold; }
         .card-lazy .amazon-link { color: #aaa; border-top-color: #333; }
-        #shuffle-btn { background: none; border: none; color: #111; font-size: 0.95rem; cursor: pointer; margin: 35px auto; text-decoration: underline; display: none; width: 100%; text-align: center; font-weight: 700; }
         footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; color: #aaa; line-height: 1.8; }
         #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
         #privacy-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; padding:40px; box-sizing:border-box; overflow-y:auto; text-align: left; }
@@ -49,7 +48,6 @@
         ontouchstart="startHold()" ontouchend="endHold()">Inspire Me</button>
         
     <div id="result-area"></div>
-    <button id="shuffle-btn" onclick="display()">Next Ideas →</button>
     
     <footer>
         <p>No login / No tracking / Browser only</p>
@@ -78,19 +76,19 @@
 <script>
     let pool = [], matches = [];
     
-    // 💡 隠しロジックのキーワード群
+    // 💡 隠しコマンド（大文字で入力されても内部で小文字化して判定します）
     const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
     const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
     const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
 
-    // 💡 よくあるスペルミスの自動変換辞書
+    // 💡 スペルミス救済辞書（chiiiなどもここに登録）
     const TYPO_MAP = {
         "tierd": "tired", "girlic": "garlic", "garic": "garlic",
         "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", 
-        "pototo": "potato", "tomata": "tomato", "bif": "beef"
+        "pototo": "potato", "tomata": "tomato", "bif": "beef",
+        "chiii": "chill", "chll": "chill", "exhasted": "exhausted"
     };
 
-    // 💡 ランダムメッセージ群
     const ROBO_LAZY = ["Go to a local Diner. 🍔", "Chinese Takeout is calling your name... 🥡", "Netflix and Cereal. 🥣", "Just sleep. Dinner is overrated. 💤"];
     const ROBO_SICK = ["Drink warm tea and go to bed. 🍵", "Chicken soup is your only friend right now. 🥣"];
     const ROBO_HANGOVER = ["Drink water. Eat grease. Pray. 🍔", "Delivery Pizza will save your life. 🍕"];
@@ -111,15 +109,18 @@
     function toggleCl() {
         const input = document.getElementById('in');
         document.getElementById('cl').style.display = input.value ? 'block' : 'none';
+        const val = input.value.toLowerCase().trim();
         const btn = document.getElementById('btn');
-        if(LAZY_WORDS.some(w => input.value.toLowerCase().includes(w))) {
+        
+        // スペルミスを考慮して判定
+        const checkWord = TYPO_MAP[val] || val;
+        if(LAZY_WORDS.includes(checkWord) || SICK_WORDS.includes(checkWord) || HANGOVER_WORDS.includes(checkWord)) {
             btn.innerText = "I'll help you...";
         } else {
             btn.innerText = "Inspire Me";
         }
     }
 
-    // 💡 長押しギミック（テキストがコロコロ変わる）
     let holdTimer, cycleTimer;
     let textIndex = 0;
     const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
@@ -139,7 +140,7 @@
                 toggleCl();
                 find();
             }
-        }, 600); // 0.6秒ごとにテキスト変化
+        }, 600);
     }
 
     function endHold() {
@@ -155,15 +156,14 @@
     function clearAll() {
         document.getElementById('in').value = '';
         document.getElementById('result-area').innerHTML = '';
-        document.getElementById('shuffle-btn').style.display = 'none';
         toggleCl();
     }
 
+    // 💡 検索ボタンを押すたびに新しく選び直すロジック
     function find() {
         let val = document.getElementById('in').value.toLowerCase().trim();
         if(!val) return;
         
-        // スペルミス補正
         let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
         keywords = keywords.map(k => TYPO_MAP[k] || k);
 
@@ -180,6 +180,7 @@
         }
 
         if (specialMsg) {
+            // Lazyモードも毎回違うものをピックアップするように修正
             const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
             matches = [
                 { name: specialMsg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
@@ -187,6 +188,7 @@
                 quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival", tags: "" }
             ];
         } else {
+            // 通常モード
             matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
         }
         display();
@@ -194,16 +196,20 @@
 
     function display() {
         const out = document.getElementById('result-area');
-        const shf = document.getElementById('shuffle-btn');
         if(matches.length === 0) {
-            // 💡 検索結果ゼロの時の皮肉メッセージ
             const randomEmpty = EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)];
             out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${randomEmpty}</div>`;
-            shf.style.display = 'none';
             return;
         }
+        
+        // 毎回シャッフルして3つ選ぶ
         const isSpecial = matches[0]?.isSpecial;
-        const pickup = isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
+        let pickup = [];
+        if (isSpecial) {
+            pickup = matches;
+        } else {
+            pickup = [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
+        }
 
         out.innerHTML = pickup.map(r => {
             let link = `https://www.amazon.com/s?k=${r.name}+kit`; 
@@ -225,7 +231,6 @@
                 </div>
             `;
         }).join('');
-        shf.style.display = (!isSpecial && matches.length > 3) ? 'block' : 'none';
     }
 
     function showPrivacy() { document.getElementById('privacy-modal').style.display = 'block'; }
