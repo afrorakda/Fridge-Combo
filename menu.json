@@ -146,5 +146,11 @@
   { "name": "Baby Spinach Salad", "time": "5 MIN", "vibe": "Ultra Quick", "tags": "spinach, leaf, fresh" },
   { "name": "Sauteed Spinach with Garlic", "time": "8 MIN", "vibe": "Side Dish", "tags": "spinach, leaf, garlic" },
   { "name": "Egg Sandwich", "time": "8 MIN", "vibe": "Basic", "tags": "egg, breakfast" },
-  { "name": "Cereal with Milk", "time": "2 MIN", "vibe": "Survival", "tags": "breakfast, snack" }
+  { "name": "Cereal with Milk", "time": "2 MIN", "vibe": "Survival", "tags": "breakfast, snack" }  ,
+  { "name": "Garlic Butter Baby Spinach", "time": "5 MIN", "vibe": "Side Dish", "tags": "spinach, garlic, butter, veggie" },
+  { "name": "Spinach & Mushroom Omelet", "time": "10 MIN", "vibe": "Breakfast", "tags": "spinach, egg, mushroom, morning" },
+  { "name": "Creamy Spinach Pasta", "time": "15 MIN", "vibe": "Rich", "tags": "spinach, pasta, cream, cheese" },
+  { "name": "Spinach, Apple & Walnut Salad", "time": "5 MIN", "vibe": "Healthy", "tags": "spinach, apple, salad, fresh" },
+  { "name": "Spinach Quesadilla", "time": "10 MIN", "vibe": "Snack", "tags": "spinach, cheese, mexican" }
+
 ]
