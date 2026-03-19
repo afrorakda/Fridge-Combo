@@ -44,8 +44,9 @@
     </div>
     
     <button id="btn" class="btn-main" 
-        onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()" 
-        ontouchstart="startHold()" ontouchend="endHold()">Inspire Me</button>
+        onmousedown="startHold()" onmouseleave="endHold()" 
+        ontouchstart="startHold()" ontouchend="endHold()"
+        onclick="if(!longPressTriggered) find()">Inspire Me</button>
         
     <div id="result-area"></div>
     
@@ -76,12 +77,10 @@
 <script>
     let pool = [], matches = [];
     
-    // 💡 隠しコマンド（大文字で入力されても内部で小文字化して判定します）
     const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
     const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
     const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
 
-    // 💡 スペルミス救済辞書（chiiiなどもここに登録）
     const TYPO_MAP = {
         "tierd": "tired", "girlic": "garlic", "garic": "garlic",
         "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", 
@@ -112,22 +111,27 @@
         const val = input.value.toLowerCase().trim();
         const btn = document.getElementById('btn');
         
-        // スペルミスを考慮して判定
-        const checkWord = TYPO_MAP[val] || val;
-        if(LAZY_WORDS.includes(checkWord) || SICK_WORDS.includes(checkWord) || HANGOVER_WORDS.includes(checkWord)) {
+        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
+        keywords = keywords.map(k => TYPO_MAP[k] || k);
+
+        const isSpecial = keywords.some(k => LAZY_WORDS.includes(k) || SICK_WORDS.includes(k) || HANGOVER_WORDS.includes(k));
+
+        if(isSpecial) {
             btn.innerText = "I'll help you...";
         } else {
             btn.innerText = "Inspire Me";
         }
     }
 
-    let holdTimer, cycleTimer;
+    let cycleTimer;
     let textIndex = 0;
     const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
     let isHolding = false;
+    let longPressTriggered = false;
 
     function startHold() {
         isHolding = true;
+        longPressTriggered = false;
         textIndex = 0;
         const btn = document.getElementById('btn');
         cycleTimer = setInterval(() => {
@@ -136,6 +140,7 @@
             textIndex++;
             if(textIndex >= btnTexts.length) {
                 clearInterval(cycleTimer);
+                longPressTriggered = true;
                 document.getElementById('in').value = 'lazy';
                 toggleCl();
                 find();
@@ -147,9 +152,8 @@
         if(!isHolding) return;
         isHolding = false;
         clearInterval(cycleTimer);
-        const btn = document.getElementById('btn');
-        if(btn.innerText !== "I'll help you...") {
-            btn.innerText = "Inspire Me";
+        if (!longPressTriggered) {
+            toggleCl();
         }
     }
 
@@ -159,7 +163,6 @@
         toggleCl();
     }
 
-    // 💡 検索ボタンを押すたびに新しく選び直すロジック
     function find() {
         let val = document.getElementById('in').value.toLowerCase().trim();
         if(!val) return;
@@ -180,7 +183,6 @@
         }
 
         if (specialMsg) {
-            // Lazyモードも毎回違うものをピックアップするように修正
             const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
             matches = [
                 { name: specialMsg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
@@ -188,7 +190,6 @@
                 quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival", tags: "" }
             ];
         } else {
-            // 通常モード
             matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
         }
         display();
@@ -202,7 +203,6 @@
             return;
         }
         
-        // 毎回シャッフルして3つ選ぶ
         const isSpecial = matches[0]?.isSpecial;
         let pickup = [];
         if (isSpecial) {
