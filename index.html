@@ -29,8 +29,11 @@
         .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid #eee; padding-top: 15px; width: 100%; display: block; font-weight: bold; }
         .card-lazy .amazon-link { color: #aaa; border-top-color: #333; }
         footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; color: #aaa; line-height: 1.8; }
+        .install-btn { background: #f0f0f0; color: #111; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; margin: 0 auto 20px; font-size: 0.8rem; display: inline-block; transition: 0.2s; }
+        .install-btn:active { transform: scale(0.95); background: #e0e0e0; }
         #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
         #privacy-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; padding:40px; box-sizing:border-box; overflow-y:auto; text-align: left; }
+        #install-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; padding:20px; box-sizing:border-box; align-items: center; justify-content: center; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -52,13 +55,27 @@
     <div id="result-area"></div>
     
     <footer>
-        <p>No login / No tracking / Browser only</p>
+        <button class="install-btn" onclick="showInstall()">📱 Add to Home Screen</button>
+        
+        <p style="margin: 0;">No login / No tracking / Browser only</p>
         <p style="font-size: 0.6rem; margin: 15px 0; padding: 0 20px;">
             As an Amazon Associate, afrorakda earns from qualifying purchases.
         </p>
         <p><a href="javascript:void(0)" onclick="showPrivacy()" style="color: #aaa; text-decoration: underline;">Privacy Policy</a></p>
         <p style="margin-top: 20px;">Fridge Combo © 2026</p>
     </footer>
+</div>
+
+<div id="install-modal">
+    <div style="background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 300px; position: relative;">
+        <button onclick="hideInstall()" style="position: absolute; top: 15px; right: 15px; background:none; border:none; font-size:20px; cursor:pointer; color: #999;">✕</button>
+        <h2 style="font-size: 1.2rem; margin-top:0;">📱 Install App</h2>
+        <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">Add Fridge Combo to your home screen for quick access.</p>
+        <div style="font-size: 0.8rem; line-height: 1.6; color: #333; margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+            <p style="margin: 0 0 10px 0;"><strong>🍏 iPhone (Safari):</strong><br>Tap the <strong>Share</strong> icon at the bottom, then <strong>Add to Home Screen</strong>.</p>
+            <p style="margin: 0;"><strong>🤖 Android (Chrome):</strong><br>Tap the <strong>Menu (⋮)</strong> at the top right, then <strong>Add to Home screen</strong>.</p>
+        </div>
+    </div>
 </div>
 
 <div id="privacy-modal">
@@ -82,7 +99,6 @@
     const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
     const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
 
-    // 💡 lumb -> lamb の変換を追加しました
     const TYPO_MAP = {
         "tierd": "tired", "girlic": "garlic", "garic": "garlic",
         "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", 
@@ -132,7 +148,7 @@
     const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
 
     function startHold(e) {
-        if(e && e.button !== undefined && e.button !== 0) return; // 左クリック以外は無視
+        if(e && e.button !== undefined && e.button !== 0) return;
         isHolding = true;
         longPressTriggered = false;
         let textIndex = 0;
@@ -155,11 +171,10 @@
         if(!isHolding) return;
         isHolding = false;
         clearInterval(cycleTimer);
-        // 💡 長押し判定になっていなければ、普通にガチャを回す（findを実行）
         if (!longPressTriggered) {
             find(); 
         }
-        toggleCl(); // ボタンの文字を元に戻す
+        toggleCl(); 
     }
 
     function cancelHold(e) {
@@ -219,7 +234,6 @@
         if (isSpecial) {
             pickup = matches;
         } else {
-            // 💡 ここで毎回ランダムに3つ選んで表示します
             pickup = [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
         }
 
@@ -247,6 +261,8 @@
 
     function showPrivacy() { document.getElementById('privacy-modal').style.display = 'block'; }
     function hidePrivacy() { document.getElementById('privacy-modal').style.display = 'none'; }
+    function showInstall() { document.getElementById('install-modal').style.display = 'flex'; }
+    function hideInstall() { document.getElementById('install-modal').style.display = 'none'; }
     async function copy(t) {
         try {
             await navigator.clipboard.writeText(t);
