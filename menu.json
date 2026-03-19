@@ -137,5 +137,30 @@
   { "name": "Baked Broccoli Tots", "time": "20 MIN", "vibe": "Healthy Snack" },
   { "name": "Quick Tomato Sandwich", "time": "5 MIN", "vibe": "Lazy lunch" },
   { "name": "Zucchini and Ham Omelet", "time": "10 MIN", "vibe": "Breakfast" },
-  { "name": "Beef and Carrot Stew", "time": "60 MIN", "vibe": "Slow cook" }
+  { "name": "Beef and Carrot Stew", "time": "60 MIN", "vibe": "Slow cook" }, [
+  { "name": "Spaghetti Aglio e Olio", "time": "15 MIN", "vibe": "Italian", "tags": "garlic, pasta, spaghetti" },
+  { "name": "Mac 'n' Cheese", "time": "15 MIN", "vibe": "Comfort", "tags": "pasta, macaroni, cheese" },
+  { "name": "Classic Cheeseburger", "time": "15 MIN", "vibe": "Meat Lover", "tags": "beef, burger" },
+  { "name": "Honey Garlic Salmon", "time": "10 MIN", "vibe": "Healthy", "tags": "fish, garlic" },
+  { "name": "Beef Tacos", "time": "20 MIN", "vibe": "Family", "tags": "beef, mexican" },
+  { "name": "Chili Con Carne", "time": "30 MIN", "vibe": "Spicy", "tags": "beef, beans, kidney beans" },
+  { "name": "Hummus with Pita", "time": "5 MIN", "vibe": "No Cook", "tags": "chickpeas, beans, vegan" },
+  { "name": "Baked Beans on Toast", "time": "5 MIN", "vibe": "Lazy Morning", "tags": "beans, white beans, breakfast" },
+  { "name": "Pork and Beans", "time": "20 MIN", "vibe": "Retro", "tags": "pork, beans" },
+  { "name": "Lentil Soup", "time": "25 MIN", "vibe": "Healthy", "tags": "beans, lentils" },
+  { "name": "Three Bean Salad", "time": "10 MIN", "vibe": "Fresh", "tags": "beans, chickpeas, kidney beans" },
+  { "name": "Chickpea Curry", "time": "20 MIN", "vibe": "Vegan", "tags": "chickpeas, beans, curry" },
+  { "name": "Baby Spinach Salad", "time": "5 MIN", "vibe": "Ultra Quick", "tags": "spinach, leaf, fresh" },
+  { "name": "Sauteed Spinach with Garlic", "time": "8 MIN", "vibe": "Side Dish", "tags": "spinach, leaf, garlic" },
+  { "name": "Pesto Pasta", "time": "12 MIN", "vibe": "Italian", "tags": "pasta, spinach, basil" },
+  { "name": "Zucchini Fritters", "time": "20 MIN", "vibe": "Homemade", "tags": "zucchini, veggie" },
+  { "name": "Tomato & Mozzarella Salad", "time": "5 MIN", "vibe": "Fresh", "tags": "tomato, salad" },
+  { "name": "Onion Rings", "time": "15 MIN", "vibe": "Snack", "tags": "onion, fried" },
+  { "name": "Carrot & Broccoli Stir-fry", "time": "10 MIN", "vibe": "Healthy", "tags": "carrot, broccoli, veggie" },
+  { "name": "Steamed Broccoli with Lemon", "time": "5 MIN", "vibe": "Clean", "tags": "broccoli, lemon" },
+  { "name": "Egg Sandwich", "time": "8 MIN", "vibe": "Basic", "tags": "egg, breakfast" },
+  { "name": "Avocado Toast", "time": "5 MIN", "vibe": "Quick", "tags": "avocado, breakfast" },
+  { "name": "Cereal with Milk", "time": "2 MIN", "vibe": "Survival", "tags": "breakfast, snack" }
+]
+
 ]
