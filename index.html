@@ -67,8 +67,8 @@
         <h2 style="font-size: 1.2rem; margin-top:0;">Privacy Policy</h2>
         <div style="font-size: 0.8rem; line-height: 1.6; color: #444;">
             <p><strong>1. Data Collection:</strong> This tool operates entirely in your browser. No personal data is collected, tracked, or stored on any server.</p>
-            <p><strong>2. Amazon Associates:</strong> This site participates in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.</p>
-            <p><strong>3. Cookies:</strong> Amazon may use cookies to track clicks and process purchases. Please refer to Amazon's privacy policy for details.</p>
+            <p><strong>2. Amazon Associates:</strong> This site participates in the Amazon Services LLC Associates Program.</p>
+            <p><strong>3. Cookies:</strong> Amazon may use cookies to track clicks and process purchases.</p>
         </div>
     </div>
 </div>
@@ -77,12 +77,27 @@
 
 <script>
     let pool = [], matches = [];
+    
+    // 💡 隠しロジックのキーワード群
     const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
-    const ROBO_MSG = [
-        "Go to a local Diner. You deserve a break. 🍔",
-        "Chinese Takeout is calling your name... 🥡",
-        "Netflix and Cereal. No cooking tonight. 🥣",
-        "Just sleep. Dinner is overrated. 💤"
+    const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
+    const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
+
+    // 💡 よくあるスペルミスの自動変換辞書
+    const TYPO_MAP = {
+        "tierd": "tired", "girlic": "garlic", "garic": "garlic",
+        "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", 
+        "pototo": "potato", "tomata": "tomato", "bif": "beef"
+    };
+
+    // 💡 ランダムメッセージ群
+    const ROBO_LAZY = ["Go to a local Diner. 🍔", "Chinese Takeout is calling your name... 🥡", "Netflix and Cereal. 🥣", "Just sleep. Dinner is overrated. 💤"];
+    const ROBO_SICK = ["Drink warm tea and go to bed. 🍵", "Chicken soup is your only friend right now. 🥣"];
+    const ROBO_HANGOVER = ["Drink water. Eat grease. Pray. 🍔", "Delivery Pizza will save your life. 🍕"];
+    const EMPTY_MSGS = [
+        "Your fridge is an empty abyss. Go buy some eggs. 🥚",
+        "Even a chef couldn't help you with that input. 👨‍🍳",
+        "Are you trying to cook air? Try again. 💨"
     ];
 
     window.onload = async () => {
@@ -104,17 +119,37 @@
         }
     }
 
-    // 長押しのタイマー処理を追加
-    let holdTimer;
+    // 💡 長押しギミック（テキストがコロコロ変わる）
+    let holdTimer, cycleTimer;
+    let textIndex = 0;
+    const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
+    let isHolding = false;
+
     function startHold() {
-        holdTimer = setTimeout(() => {
-            document.getElementById('in').value = 'lazy';
-            toggleCl();
-            find();
-        }, 800); // 0.8秒長押しで発動
+        isHolding = true;
+        textIndex = 0;
+        const btn = document.getElementById('btn');
+        cycleTimer = setInterval(() => {
+            if(!isHolding) return;
+            btn.innerText = btnTexts[textIndex];
+            textIndex++;
+            if(textIndex >= btnTexts.length) {
+                clearInterval(cycleTimer);
+                document.getElementById('in').value = 'lazy';
+                toggleCl();
+                find();
+            }
+        }, 600); // 0.6秒ごとにテキスト変化
     }
+
     function endHold() {
-        clearTimeout(holdTimer);
+        if(!isHolding) return;
+        isHolding = false;
+        clearInterval(cycleTimer);
+        const btn = document.getElementById('btn');
+        if(btn.innerText !== "I'll help you...") {
+            btn.innerText = "Inspire Me";
+        }
     }
 
     function clearAll() {
@@ -125,20 +160,31 @@
     }
 
     function find() {
-        const val = document.getElementById('in').value.toLowerCase().trim();
+        let val = document.getElementById('in').value.toLowerCase().trim();
         if(!val) return;
+        
+        // スペルミス補正
+        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
+        keywords = keywords.map(k => TYPO_MAP[k] || k);
+
         const hour = new Date().getHours();
         const isLate = (hour >= 1 && hour < 5);
-        const keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
-        const hasLazy = keywords.some(k => LAZY_WORDS.includes(k)) || isLate;
+        
+        let specialMsg = null;
+        if (keywords.some(k => LAZY_WORDS.includes(k)) || isLate) {
+            specialMsg = isLate ? "It's " + hour + " AM. Go to sleep. 💤" : ROBO_LAZY[Math.floor(Math.random()*ROBO_LAZY.length)];
+        } else if (keywords.some(k => SICK_WORDS.includes(k))) {
+            specialMsg = ROBO_SICK[Math.floor(Math.random()*ROBO_SICK.length)];
+        } else if (keywords.some(k => HANGOVER_WORDS.includes(k))) {
+            specialMsg = ROBO_HANGOVER[Math.floor(Math.random()*ROBO_HANGOVER.length)];
+        }
 
-        if (hasLazy) {
+        if (specialMsg) {
             const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
-            const msg = isLate ? "It's " + hour + " AM. Why are you cooking? Go to sleep. 💤" : ROBO_MSG[Math.floor(Math.random()*ROBO_MSG.length)];
             matches = [
-                { name: msg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
-                quickOnes[0] || { name: "Fried Egg", time: "5 MIN", vibe: "Survial", tags: "" }, 
-                quickOnes[1] || { name: "Toast", time: "3 MIN", vibe: "Survial", tags: "" }
+                { name: specialMsg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
+                quickOnes[0] || { name: "Toast", time: "3 MIN", vibe: "Survival", tags: "" }, 
+                quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival", tags: "" }
             ];
         } else {
             matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
@@ -150,7 +196,9 @@
         const out = document.getElementById('result-area');
         const shf = document.getElementById('shuffle-btn');
         if(matches.length === 0) {
-            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">Your fridge is an empty abyss. 🥚</div>`;
+            // 💡 検索結果ゼロの時の皮肉メッセージ
+            const randomEmpty = EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)];
+            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${randomEmpty}</div>`;
             shf.style.display = 'none';
             return;
         }
