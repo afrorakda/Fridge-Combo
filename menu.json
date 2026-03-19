@@ -162,7 +162,25 @@
   { "name": "Loaded Baked Potato", "time": "45 MIN", "vibe": "Filling", "tags": "potato, cheese, bacon" },
   { "name": "Homemade Potato Salad", "time": "20 MIN", "vibe": "Picnic", "tags": "potato, mayo, egg" },
   { "name": "Garlic Herb Potato Wedges", "time": "30 MIN", "vibe": "Snack", "tags": "potato, bake, garlic" },
-  { "name": "Potato and Leek Soup", "time": "25 MIN", "vibe": "Warm", "tags": "potato, soup, leek" }
+  { "name": "Potato and Leek Soup", "time": "25 MIN", "vibe": "Warm", "tags": "potato, soup, leek" }  ,
+  { "name": "Garlic Butter Lamb Chops", "time": "20 MIN", "vibe": "Fancy", "tags": "lamb, meat, garlic, butter" },
+  { "name": "Spicy Lamb Curry", "time": "40 MIN", "vibe": "Spicy", "tags": "lamb, curry, spicy" },
+  { "name": "Roast Lamb Leg", "time": "90 MIN", "vibe": "Sunday Roast", "tags": "lamb, roast, family" },
+  { "name": "Shepherd's Pie", "time": "45 MIN", "vibe": "Comfort", "tags": "lamb, potato, bake" },
+  { "name": "Greek Lamb Gyros", "time": "25 MIN", "vibe": "Street Food", "tags": "lamb, bread, onion" },
+  
+  { "name": "Four Cheese Pizza", "time": "20 MIN", "vibe": "Cheesy", "tags": "cheese, pizza, bake" },
+  { "name": "Baked Camembert", "time": "15 MIN", "vibe": "Appetizer", "tags": "cheese, dip, warm" },
+  { "name": "Mozzarella Sticks", "time": "10 MIN", "vibe": "Snack", "tags": "cheese, fry, crispy" },
+  { "name": "Cheese Fondue", "time": "20 MIN", "vibe": "Party", "tags": "cheese, dip, fun" },
+  { "name": "Brie and Apple Toast", "time": "5 MIN", "vibe": "Quick Snack", "tags": "cheese, apple, bread" },
+  
+  { "name": "Classic Eggs Benedict", "time": "20 MIN", "vibe": "Brunch", "tags": "egg, breakfast, fancy" },
+  { "name": "Spicy Shakshuka", "time": "25 MIN", "vibe": "Middle East", "tags": "egg, tomato, spicy" },
+  { "name": "Creamy Deviled Eggs", "time": "15 MIN", "vibe": "Party", "tags": "egg, mayo, snack" },
+  { "name": "Fluffy Tamagoyaki", "time": "10 MIN", "vibe": "Japanese", "tags": "egg, roll, sweet" },
+  { "name": "Vegetable Frittata", "time": "20 MIN", "vibe": "Healthy", "tags": "egg, veggie, bake" }
+
 
 
 ]
