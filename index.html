@@ -50,7 +50,7 @@
     <footer>
         <p>No login / No tracking / Browser only</p>
         <p style="font-size: 0.6rem; margin: 15px 0; padding: 0 20px;">
-            As an Amazon Associate, [ここにあなたの名前] earns from qualifying purchases.
+            As an Amazon Associate, afrorakda earns from qualifying purchases.
         </p>
         <p><a href="javascript:void(0)" onclick="showPrivacy()" style="color: #aaa; text-decoration: underline;">Privacy Policy</a></p>
         <p style="margin-top: 20px;">Fridge Combo © 2026</p>
@@ -140,11 +140,9 @@
         const pickup = isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
 
         out.innerHTML = pickup.map(r => {
-            // ここがアフィリエイトリンクの判定ロジック
-            let link = `https://www.amazon.com/s?k=${r.name}+kit`; // 基本は検索結果
+            let link = `https://www.amazon.com/s?k=${r.name}+kit`; 
             let linkText = "🛒 Shop ingredients on Amazon";
 
-            // もし「特定のリンク」がデータにあればそれを、なければ検索
             if(r.affiliate_url) {
                 link = r.affiliate_url;
                 linkText = "🚀 Get this exact Kit / Spice";
