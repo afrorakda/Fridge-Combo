@@ -16,7 +16,7 @@
         .input-box { width: 100%; padding: 18px 50px 18px 18px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: 0.2s; -webkit-appearance: none; }
         .input-box:focus { border-color: #111; }
         .btn-clear { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #ccc; cursor: pointer; display: none; }
-        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 30px; transition: 0.2s; -webkit-appearance: none; }
+        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 30px; transition: 0.2s; -webkit-appearance: none; user-select: none; -webkit-user-select: none; }
         .btn-main:active { opacity: 0.8; transform: scale(0.98); }
         #result-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
         .card { background: #f9f9f9; padding: 22px; border-radius: 14px; border: 1px solid #eee; animation: fadeIn 0.4s ease; position: relative; }
@@ -43,7 +43,11 @@
         <input type="text" id="in" class="input-box" placeholder="beef, onion" onkeypress="if(event.key==='Enter') find()" oninput="toggleCl()">
         <button id="cl" class="btn-clear" onclick="clearAll()">✕</button>
     </div>
-    <button id="btn" class="btn-main" onclick="find()">Inspire Me</button>
+    
+    <button id="btn" class="btn-main" 
+        onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()" 
+        ontouchstart="startHold()" ontouchend="endHold()">Inspire Me</button>
+        
     <div id="result-area"></div>
     <button id="shuffle-btn" onclick="display()">Next Ideas →</button>
     
@@ -100,6 +104,19 @@
         }
     }
 
+    // 長押しのタイマー処理を追加
+    let holdTimer;
+    function startHold() {
+        holdTimer = setTimeout(() => {
+            document.getElementById('in').value = 'lazy';
+            toggleCl();
+            find();
+        }, 800); // 0.8秒長押しで発動
+    }
+    function endHold() {
+        clearTimeout(holdTimer);
+    }
+
     function clearAll() {
         document.getElementById('in').value = '';
         document.getElementById('result-area').innerHTML = '';
@@ -120,7 +137,8 @@
             const msg = isLate ? "It's " + hour + " AM. Why are you cooking? Go to sleep. 💤" : ROBO_MSG[Math.floor(Math.random()*ROBO_MSG.length)];
             matches = [
                 { name: msg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
-                quickOnes[0], quickOnes[1]
+                quickOnes[0] || { name: "Fried Egg", time: "5 MIN", vibe: "Survial", tags: "" }, 
+                quickOnes[1] || { name: "Toast", time: "3 MIN", vibe: "Survial", tags: "" }
             ];
         } else {
             matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
