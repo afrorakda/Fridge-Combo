@@ -16,7 +16,7 @@
         .input-box { width: 100%; padding: 18px 50px 18px 18px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: 0.2s; -webkit-appearance: none; }
         .input-box:focus { border-color: #111; }
         .btn-clear { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #ccc; cursor: pointer; display: none; }
-        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 30px; transition: 0.2s; -webkit-appearance: none; user-select: none; -webkit-user-select: none; }
+        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 30px; transition: 0.2s; -webkit-appearance: none; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
         .btn-main:active { opacity: 0.8; transform: scale(0.98); }
         #result-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
         .card { background: #f9f9f9; padding: 22px; border-radius: 14px; border: 1px solid #eee; animation: fadeIn 0.4s ease; position: relative; }
@@ -44,9 +44,10 @@
     </div>
     
     <button id="btn" class="btn-main" 
-        onmousedown="startHold()" onmouseleave="endHold()" 
-        ontouchstart="startHold()" ontouchend="endHold()"
-        onclick="if(!longPressTriggered) find()">Inspire Me</button>
+        onpointerdown="startHold(event)" 
+        onpointerup="endHold(event)" 
+        onpointerleave="cancelHold(event)"
+        oncontextmenu="event.preventDefault();">Inspire Me</button>
         
     <div id="result-area"></div>
     
@@ -81,11 +82,13 @@
     const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
     const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
 
+    // 💡 lumb -> lamb の変換を追加しました
     const TYPO_MAP = {
         "tierd": "tired", "girlic": "garlic", "garic": "garlic",
         "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", 
         "pototo": "potato", "tomata": "tomato", "bif": "beef",
-        "chiii": "chill", "chll": "chill", "exhasted": "exhausted"
+        "chiii": "chill", "chll": "chill", "exhasted": "exhausted",
+        "lumb": "lamb", "chese": "cheese", "eg": "egg"
     };
 
     const ROBO_LAZY = ["Go to a local Diner. 🍔", "Chinese Takeout is calling your name... 🥡", "Netflix and Cereal. 🥣", "Just sleep. Dinner is overrated. 💤"];
@@ -124,15 +127,15 @@
     }
 
     let cycleTimer;
-    let textIndex = 0;
-    const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
     let isHolding = false;
     let longPressTriggered = false;
+    const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
 
-    function startHold() {
+    function startHold(e) {
+        if(e && e.button !== undefined && e.button !== 0) return; // 左クリック以外は無視
         isHolding = true;
         longPressTriggered = false;
-        textIndex = 0;
+        let textIndex = 0;
         const btn = document.getElementById('btn');
         cycleTimer = setInterval(() => {
             if(!isHolding) return;
@@ -148,13 +151,21 @@
         }, 600);
     }
 
-    function endHold() {
+    function endHold(e) {
         if(!isHolding) return;
         isHolding = false;
         clearInterval(cycleTimer);
+        // 💡 長押し判定になっていなければ、普通にガチャを回す（findを実行）
         if (!longPressTriggered) {
-            toggleCl();
+            find(); 
         }
+        toggleCl(); // ボタンの文字を元に戻す
+    }
+
+    function cancelHold(e) {
+        isHolding = false;
+        clearInterval(cycleTimer);
+        toggleCl();
     }
 
     function clearAll() {
@@ -208,6 +219,7 @@
         if (isSpecial) {
             pickup = matches;
         } else {
+            // 💡 ここで毎回ランダムに3つ選んで表示します
             pickup = [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
         }
 
