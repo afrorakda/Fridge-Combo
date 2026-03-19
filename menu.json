@@ -151,6 +151,18 @@
   { "name": "Spinach & Mushroom Omelet", "time": "10 MIN", "vibe": "Breakfast", "tags": "spinach, egg, mushroom, morning" },
   { "name": "Creamy Spinach Pasta", "time": "15 MIN", "vibe": "Rich", "tags": "spinach, pasta, cream, cheese" },
   { "name": "Spinach, Apple & Walnut Salad", "time": "5 MIN", "vibe": "Healthy", "tags": "spinach, apple, salad, fresh" },
-  { "name": "Spinach Quesadilla", "time": "10 MIN", "vibe": "Snack", "tags": "spinach, cheese, mexican" }
+  { "name": "Spinach Quesadilla", "time": "10 MIN", "vibe": "Snack", "tags": "spinach, cheese, mexican" }  ,
+  { "name": "Classic Tomato Soup", "time": "20 MIN", "vibe": "Cozy", "tags": "tomato, soup, warm" },
+  { "name": "Tomato Basil Bruschetta", "time": "10 MIN", "vibe": "Appetizer", "tags": "tomato, basil, bread, fresh" },
+  { "name": "Fresh Caprese Salad", "time": "5 MIN", "vibe": "Italian", "tags": "tomato, mozzarella, basil, cheese" },
+  { "name": "Cherry Tomato Pasta", "time": "15 MIN", "vibe": "Light", "tags": "tomato, pasta, garlic" },
+  { "name": "Stuffed Baked Tomatoes", "time": "30 MIN", "vibe": "Healthy", "tags": "tomato, rice, bake" },
+  { "name": "Creamy Mashed Potatoes", "time": "20 MIN", "vibe": "Comfort", "tags": "potato, butter, milk" },
+  { "name": "Crispy Hash Browns", "time": "15 MIN", "vibe": "Breakfast", "tags": "potato, breakfast, crispy" },
+  { "name": "Loaded Baked Potato", "time": "45 MIN", "vibe": "Filling", "tags": "potato, cheese, bacon" },
+  { "name": "Homemade Potato Salad", "time": "20 MIN", "vibe": "Picnic", "tags": "potato, mayo, egg" },
+  { "name": "Garlic Herb Potato Wedges", "time": "30 MIN", "vibe": "Snack", "tags": "potato, bake, garlic" },
+  { "name": "Potato and Leek Soup", "time": "25 MIN", "vibe": "Warm", "tags": "potato, soup, leek" }
+
 
 ]
