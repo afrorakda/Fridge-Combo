@@ -59,7 +59,6 @@
     
     <footer>
         <button class="install-btn" onclick="showInstall()">📱 Add to Home Screen</button>
-        
         <p style="margin: 0;">No login / No tracking / Browser only</p>
         <p style="font-size: 0.6rem; margin: 15px 0; padding: 0 20px;">
             As an Amazon Associate, afrorakda earns from qualifying purchases.
@@ -75,8 +74,8 @@
         <h2 style="font-size: 1.2rem; margin-top:0;">📱 Install App</h2>
         <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">Add Fridge Combo to your home screen for quick access.</p>
         <div style="font-size: 0.8rem; line-height: 1.6; color: #333; margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
-            <p style="margin: 0 0 10px 0;"><strong>🍏 iPhone (Safari):</strong><br>Tap the <strong>Share</strong> icon at the bottom, then <strong>Add to Home Screen</strong>.</p>
-            <p style="margin: 0;"><strong>🤖 Android (Chrome):</strong><br>Tap the <strong>Menu (⋮)</strong> at the top right, then <strong>Add to Home screen</strong>.</p>
+            <p style="margin: 0 0 10px 0;"><strong>🍏 iPhone (Safari):</strong><br>Tap the <strong>Share</strong> icon, then <strong>Add to Home Screen</strong>.</p>
+            <p style="margin: 0;"><strong>🤖 Android (Chrome):</strong><br>Tap the <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.</p>
         </div>
     </div>
 </div>
@@ -86,9 +85,9 @@
         <button onclick="hidePrivacy()" style="background:none; border:none; font-size:24px; cursor:pointer; float:right;">✕</button>
         <h2 style="font-size: 1.2rem; margin-top:0;">Privacy Policy</h2>
         <div style="font-size: 0.8rem; line-height: 1.6; color: #444;">
-            <p><strong>1. Data Collection:</strong> This tool operates entirely in your browser. No personal data is collected, tracked, or stored on any server.</p>
-            <p><strong>2. Amazon Associates:</strong> This site participates in the Amazon Services LLC Associates Program.</p>
-            <p><strong>3. Cookies:</strong> Amazon may use cookies to track clicks and process purchases.</p>
+            <p><strong>1. Data Collection:</strong> Operates entirely in your browser. No personal data collected.</p>
+            <p><strong>2. Amazon Associates:</strong> Site participates in the Amazon Associates Program.</p>
+            <p><strong>3. Cookies:</strong> Amazon may use cookies to track clicks.</p>
         </div>
     </div>
 </div>
@@ -97,34 +96,22 @@
 
 <script>
     let pool = [], matches = [];
-    
     const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
     const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
     const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
 
     const TYPO_MAP = {
-        "tierd": "tired", "girlic": "garlic", "garic": "garlic",
-        "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", 
-        "pototo": "potato", "tomata": "tomato", "bif": "beef",
-        "chiii": "chill", "chll": "chill", "exhasted": "exhausted",
-        "lumb": "lamb", "chese": "cheese", "eg": "egg"
+        "tierd": "tired", "girlic": "garlic", "garic": "garlic", "onoin": "onion", "chiken": "chicken",
+        "spinnach": "spinach", "pototo": "potato", "tomata": "tomato", "bif": "beef"
     };
 
     const ROBO_LAZY = ["Go to a local Diner. 🍔", "Chinese Takeout is calling your name... 🥡", "Netflix and Cereal. 🥣", "Just sleep. Dinner is overrated. 💤"];
-    const ROBO_SICK = ["Drink warm tea and go to bed. 🍵", "Chicken soup is your only friend right now. 🥣"];
+    const ROBO_SICK = ["Drink warm tea and go to bed. 🍵", "Chicken soup is your only friend. 🥣"];
     const ROBO_HANGOVER = ["Drink water. Eat grease. Pray. 🍔", "Delivery Pizza will save your life. 🍕"];
-    const EMPTY_MSGS = [
-        "Your fridge is an empty abyss. Go buy some eggs. 🥚",
-        "Even a chef couldn't help you with that input. 👨‍🍳",
-        "Are you trying to cook air? Try again. 💨"
-    ];
+    const EMPTY_MSGS = ["Your fridge is an empty abyss. 🥚", "Try again with real food. 👨‍🍳"];
 
     window.onload = async () => {
         try { pool = await (await fetch('menu.json')).json(); } catch(e) {}
-        setTimeout(() => {
-            const input = document.getElementById('in');
-            if(!input.value) input.placeholder = "beef, onion, lazy?";
-        }, 3000);
     };
 
     function toggleCl() {
@@ -132,28 +119,18 @@
         document.getElementById('cl').style.display = input.value ? 'block' : 'none';
         const val = input.value.toLowerCase().trim();
         const btn = document.getElementById('btn');
-        
         let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
         keywords = keywords.map(k => TYPO_MAP[k] || k);
-
         const isSpecial = keywords.some(k => LAZY_WORDS.includes(k) || SICK_WORDS.includes(k) || HANGOVER_WORDS.includes(k));
-
-        if(isSpecial) {
-            btn.innerText = "I'll help you...";
-        } else {
-            btn.innerText = "Inspire Me";
-        }
+        btn.innerText = isSpecial ? "I'll help you..." : "Inspire Me";
     }
 
-    let cycleTimer;
-    let isHolding = false;
-    let longPressTriggered = false;
+    let cycleTimer, isHolding = false, longPressTriggered = false;
     const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
 
     function startHold(e) {
         if(e && e.button !== undefined && e.button !== 0) return;
-        isHolding = true;
-        longPressTriggered = false;
+        isHolding = true; longPressTriggered = false;
         let textIndex = 0;
         const btn = document.getElementById('btn');
         cycleTimer = setInterval(() => {
@@ -164,47 +141,29 @@
                 clearInterval(cycleTimer);
                 longPressTriggered = true;
                 document.getElementById('in').value = 'lazy';
-                toggleCl();
-                find();
+                toggleCl(); find();
             }
         }, 600);
     }
 
     function endHold(e) {
-        if(!isHolding) return;
-        isHolding = false;
-        clearInterval(cycleTimer);
-        if (!longPressTriggered) {
-            find(); 
-        }
+        isHolding = false; clearInterval(cycleTimer);
+        if (!longPressTriggered) find();
         toggleCl(); 
     }
 
-    function cancelHold(e) {
-        isHolding = false;
-        clearInterval(cycleTimer);
-        toggleCl();
-    }
-
-    function clearAll() {
-        document.getElementById('in').value = '';
-        document.getElementById('result-area').innerHTML = '';
-        toggleCl();
-    }
+    function cancelHold(e) { isHolding = false; clearInterval(cycleTimer); toggleCl(); }
+    function clearAll() { document.getElementById('in').value = ''; document.getElementById('result-area').innerHTML = ''; toggleCl(); }
 
     function find() {
         let val = document.getElementById('in').value.toLowerCase().trim();
         if(!val) return;
-        
         let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
         keywords = keywords.map(k => TYPO_MAP[k] || k);
-
-        const hour = new Date().getHours();
-        const isLate = (hour >= 1 && hour < 5);
         
         let specialMsg = null;
-        if (keywords.some(k => LAZY_WORDS.includes(k)) || isLate) {
-            specialMsg = isLate ? "It's " + hour + " AM. Go to sleep. 💤" : ROBO_LAZY[Math.floor(Math.random()*ROBO_LAZY.length)];
+        if (keywords.some(k => LAZY_WORDS.includes(k))) {
+            specialMsg = ROBO_LAZY[Math.floor(Math.random()*ROBO_LAZY.length)];
         } else if (keywords.some(k => SICK_WORDS.includes(k))) {
             specialMsg = ROBO_SICK[Math.floor(Math.random()*ROBO_SICK.length)];
         } else if (keywords.some(k => HANGOVER_WORDS.includes(k))) {
@@ -215,8 +174,8 @@
             const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
             matches = [
                 { name: specialMsg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
-                quickOnes[0] || { name: "Toast", time: "3 MIN", vibe: "Survival", tags: "" }, 
-                quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival", tags: "" }
+                quickOnes[0] || { name: "Toast", time: "3 MIN", vibe: "Survival" }, 
+                quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival" }
             ];
         } else {
             matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
@@ -227,39 +186,20 @@
     function display() {
         const out = document.getElementById('result-area');
         if(matches.length === 0) {
-            const randomEmpty = EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)];
-            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${randomEmpty}</div>`;
+            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)]}</div>`;
             return;
         }
-        
-        const isSpecial = matches[0]?.isSpecial;
-        let pickup = [];
-        if (isSpecial) {
-            pickup = matches;
-        } else {
-            pickup = [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
-        }
-
-        out.innerHTML = pickup.map(r => {
-            let link = `https://www.amazon.com/s?k=${r.name}+kit`; 
-            let linkText = "🛒 Shop ingredients on Amazon";
-
-            if(r.affiliate_url) {
-                link = r.affiliate_url;
-                linkText = "🚀 Get this exact Kit / Spice";
-            }
-
-            return `
-                <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
-                    <span class="name" onclick="copy('${r.name}')">${r.name}</span>
-                    <div class="tag-group">
-                        <span class="tag">${r.time}</span>
-                        <span class="tag tag-vibe">${r.vibe}</span>
-                    </div>
-                    ${r.isSpecial ? '' : `<a href="${link}" target="_blank" class="amazon-link">${linkText}</a>`}
+        let pickup = matches[0]?.isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
+        out.innerHTML = pickup.map(r => `
+            <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
+                <span class="name" onclick="copy('${r.name}')">${r.name}</span>
+                <div class="tag-group">
+                    <span class="tag">${r.time}</span>
+                    <span class="tag tag-vibe">${r.vibe}</span>
                 </div>
-            `;
-        }).join('');
+                ${r.isSpecial ? '' : `<a href="https://www.amazon.com/s?k=${r.name}+kit" target="_blank" class="amazon-link">🛒 Shop ingredients</a>`}
+            </div>
+        `).join('');
     }
 
     function showPrivacy() { document.getElementById('privacy-modal').style.display = 'block'; }
@@ -267,12 +207,7 @@
     function showInstall() { document.getElementById('install-modal').style.display = 'flex'; }
     function hideInstall() { document.getElementById('install-modal').style.display = 'none'; }
     async function copy(t) {
-        try {
-            await navigator.clipboard.writeText(t);
-            const s = document.getElementById('toast');
-            s.style.display = 'block';
-            setTimeout(() => { s.style.display = 'none'; }, 1500);
-        } catch(e) {}
+        try { await navigator.clipboard.writeText(t); const s = document.getElementById('toast'); s.style.display = 'block'; setTimeout(() => { s.style.display = 'none'; }, 1500); } catch(e) {}
     }
 </script>
 </body>
