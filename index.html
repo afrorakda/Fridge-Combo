@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fridge Combo</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         /* Fridge Combo UI Standard: Minimalist, White BG, Black Button, 15px Rounded */
         body {
@@ -61,6 +64,17 @@
             opacity: 0.8;
         }
 
+        /* Add to Home Banner */
+        #pwa-banner {
+            display: none;
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
         #result {
             margin-top: 30px;
             white-space: pre-wrap;
@@ -96,6 +110,10 @@
 </head>
 <body>
 
+    <div id="pwa-banner">
+        📱 Add to Home Screen for better experience!
+    </div>
+
     <h1>Fridge Combo</h1>
 
     <div class="input-group">
@@ -116,6 +134,25 @@
     </footer>
 
     <script>
+        // PWA Install Prompt Logic
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwa-banner').style.display = 'block';
+        });
+
+        document.getElementById('pwa-banner').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('pwa-banner').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
         function findRecipe() {
             const ingredients = document.getElementById('ingredients').value;
             const resultDiv = document.getElementById('result');
@@ -125,12 +162,11 @@
                 return;
             }
 
-            // Simple logic: Direct Google Search for Recipes
             const query = encodeURIComponent(ingredients + " recipes");
             const searchUrl = `https://www.google.com/search?q=${query}`;
             
-            resultDiv.innerHTML = `Searching for recipes with: <strong>${ingredients}</strong>...<br><br>` +
-                                `<button onclick="window.open('${searchUrl}', '_blank')" style="background:#555; padding:10px; font-size:14px;">Open Search Results</button>`;
+            resultDiv.innerHTML = `Searching for: <strong>${ingredients}</strong>...<br><br>` +
+                                `<button onclick="window.open('${searchUrl}', '_blank')" style="background:#555; padding:10px; font-size:14px;">Open Results</button>`;
         }
     </script>
 </body>
