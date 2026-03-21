@@ -179,7 +179,20 @@
   { "name": "Spicy Shakshuka", "time": "25 MIN", "vibe": "Middle East", "tags": "egg, tomato, spicy" },
   { "name": "Creamy Deviled Eggs", "time": "15 MIN", "vibe": "Party", "tags": "egg, mayo, snack" },
   { "name": "Fluffy Tamagoyaki", "time": "10 MIN", "vibe": "Japanese", "tags": "egg, roll, sweet" },
-  { "name": "Vegetable Frittata", "time": "20 MIN", "vibe": "Healthy", "tags": "egg, veggie, bake" }
+  { "name": "Vegetable Frittata", "time": "20 MIN", "vibe": "Healthy", "tags": "egg, veggie, bake" },  { "name": "Chicken Noodle Soup", "time": "30 MIN", "vibe": "Healing", "tags": "chicken, noodle, soup, warm" },
+  { "name": "Sloppy Joes", "time": "20 MIN", "vibe": "Retro", "tags": "beef, buns, onion" },
+  { "name": "Tuna Casserole", "time": "40 MIN", "vibe": "Baked", "tags": "tuna, macaroni, cheese, bake" },
+  { "name": "Chili Con Carne", "time": "45 MIN", "vibe": "Stew", "tags": "beef, beans, tomato, spicy" },
+  { "name": "Chicken Nuggets", "time": "25 MIN", "vibe": "Kids Favorite", "tags": "chicken, fried" },
+  { "name": "Pot Roast", "time": "120 MIN", "vibe": "Slow Cook", "tags": "beef, potato, carrot, onion" },
+  { "name": "Lasagna", "time": "90 MIN", "vibe": "Family", "tags": "pasta, beef, cheese, bake" },
+  { "name": "Quesadilla", "time": "10 MIN", "vibe": "Mexican", "tags": "tortilla, cheese, chicken" },
+  { "name": "American Goulash", "time": "30 MIN", "vibe": "One Pot", "tags": "beef, macaroni, tomato" },
+  { "name": "Pork Chops with Gravy", "time": "20 MIN", "vibe": "Meat Lover", "tags": "pork, milk, flour" },
+  { "name": "Salisbury Steak", "time": "30 MIN", "vibe": "Meat Lover", "tags": "beef, mushroom, onion" },
+  { "name": "Chicken and Dumplings", "time": "45 MIN", "vibe": "Stew", "tags": "chicken, flour, milk" },
+  { "name": "Green Bean Casserole", "time": "35 MIN", "vibe": "Baked", "tags": "green beans, mushroom, onion" }
+
 
 
 
