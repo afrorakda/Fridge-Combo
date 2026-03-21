@@ -1,173 +1,220 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fridge Combo</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Fridge Combo</title>
+    
+    <link rel="icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+
     <style>
-        /* Fridge Combo UI Standard: Minimalist, White BG, Black Button, 15px Rounded */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #ffffff;
-            color: #1a1a1a;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: #fff; display: flex; justify-content: center; padding: 20px; margin: 0; color: #111; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; }
+        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 25px 0 5px; }
+        .subtitle { font-size: 0.85rem; color: #666; margin-bottom: 35px; }
+        .input-group { position: relative; margin-bottom: 18px; }
+        .input-box { width: 100%; padding: 18px 50px 18px 18px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: 0.2s; -webkit-appearance: none; }
+        .input-box:focus { border-color: #111; }
+        .btn-clear { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 22px; color: #ccc; cursor: pointer; display: none; }
+        .btn-main { width: 100%; padding: 18px; background-color: #111; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 30px; transition: 0.2s; -webkit-appearance: none; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+        .btn-main:active { opacity: 0.8; transform: scale(0.98); }
+        #result-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
+        .card { background: #f9f9f9; padding: 22px; border-radius: 14px; border: 1px solid #eee; animation: fadeIn 0.4s ease; position: relative; }
+        .card-lazy { background: #111; color: #fff; border: none; }
+        .name { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 12px; cursor: pointer; }
+        .tag-group { display: flex; gap: 6px; margin-bottom: 18px; }
+        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; background: #e0e0e0; color: #444; font-weight: 700; }
+        .tag-vibe { background: #111; color: #fff; }
+        .card-lazy .tag { background: #333; color: #ccc; }
+        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid #eee; padding-top: 15px; width: 100%; display: block; font-weight: bold; }
+        .card-lazy .amazon-link { color: #aaa; border-top-color: #333; }
+        
+        /* New Ko-fi Button Style */
+        .kofi-btn { display: inline-block; background-color: #111; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 15px; font-weight: 700; font-size: 14px; margin-bottom: 25px; transition: 0.2s; }
+        .kofi-btn:active { opacity: 0.8; transform: scale(0.95); }
 
-        h1 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 15px;
-            box-sizing: border-box;
-            font-size: 16px;
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: #000000;
-            color: #ffffff;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        button:active {
-            opacity: 0.8;
-        }
-
-        /* Add to Home Banner */
-        #pwa-banner {
-            display: none;
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        #result {
-            margin-top: 30px;
-            white-space: pre-wrap;
-        }
-
-        /* Footer Section: Ko-fi & Privacy Policy */
-        footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px solid #f0f0f0;
-            text-align: center;
-        }
-
-        .kofi-button {
-            display: inline-block;
-            background-color: #000000;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 15px;
-            font-weight: 700;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .footer-text {
-            font-size: 11px;
-            color: #999;
-            margin: 5px 0;
-            letter-spacing: 0.02em;
-        }
+        footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; color: #aaa; line-height: 1.8; }
+        .install-btn { background: #f0f0f0; color: #111; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; margin: 0 auto 20px; font-size: 0.8rem; display: inline-block; transition: 0.2s; }
+        .install-btn:active { transform: scale(0.95); background: #e0e0e0; }
+        #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.8rem; display: none; z-index: 100; }
+        #privacy-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:1000; padding:40px; box-sizing:border-box; overflow-y:auto; text-align: left; }
+        #install-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; padding:20px; box-sizing:border-box; align-items: center; justify-content: center; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-
-    <div id="pwa-banner">
-        📱 Add to Home Screen for better experience!
-    </div>
-
+<div class="container">
     <h1>Fridge Combo</h1>
-
+    <p class="subtitle">Just one (or more) ingredient for tonight's dinner idea.</p>
     <div class="input-group">
-        <label>Ingredients (comma separated)</label>
-        <input type="text" id="ingredients" placeholder="Tomato, Egg, Onion...">
+        <input type="text" id="in" class="input-box" placeholder="beef, onion" onkeypress="if(event.key==='Enter') find()" oninput="toggleCl()">
+        <button id="cl" class="btn-clear" onclick="clearAll()">✕</button>
     </div>
-
-    <button onclick="findRecipe()">Find Recipe</button>
-
-    <div id="result"></div>
-
+    
+    <button id="btn" class="btn-main" 
+        onpointerdown="startHold(event)" 
+        onpointerup="endHold(event)" 
+        onpointerleave="cancelHold(event)"
+        oncontextmenu="event.preventDefault();">Inspire Me</button>
+        
+    <div id="result-area"></div>
+    
     <footer>
-        <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-button">
-            ☕ Support me on Ko-fi
-        </a>
-        <p class="footer-text">No login / No tracking / No ads / Browser only Privacy Policy</p>
-        <p class="footer-text">Fridge Combo © 2026</p>
+        <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕ Support me on Ko-fi</a><br>
+        <button class="install-btn" onclick="showInstall()">📱 Add to Home Screen</button>
+        <p style="margin: 0;">No login / No tracking / Browser only</p>
+        <p style="font-size: 0.6rem; margin: 15px 0; padding: 0 20px;">
+            As an Amazon Associate, afrorakda earns from qualifying purchases.
+        </p>
+        <p><a href="javascript:void(0)" onclick="showPrivacy()" style="color: #aaa; text-decoration: underline;">Privacy Policy</a></p>
+        <p style="margin-top: 20px;">Fridge Combo © 2026</p>
     </footer>
+</div>
 
-    <script>
-        // PWA Install Prompt Logic
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('pwa-banner').style.display = 'block';
-        });
+<div id="install-modal">
+    <div style="background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 300px; position: relative;">
+        <button onclick="hideInstall()" style="position: absolute; top: 15px; right: 15px; background:none; border:none; font-size:20px; cursor:pointer; color: #999;">✕</button>
+        <h2 style="font-size: 1.2rem; margin-top:0;">📱 Install App</h2>
+        <p style="font-size: 0.85rem; color: #555; line-height: 1.5;">Add Fridge Combo to your home screen for quick access.</p>
+        <div style="font-size: 0.8rem; line-height: 1.6; color: #333; margin-top: 15px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+            <p style="margin: 0 0 10px 0;"><strong>🍏 iPhone (Safari):</strong><br>Tap the <strong>Share</strong> icon, then <strong>Add to Home Screen</strong>.</p>
+            <p style="margin: 0;"><strong>🤖 Android (Chrome):</strong><br>Tap the <strong>Menu (⋮)</strong>, then <strong>Add to Home screen</strong>.</p>
+        </div>
+    </div>
+</div>
 
-        document.getElementById('pwa-banner').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('pwa-banner').style.display = 'none';
-                }
-                deferredPrompt = null;
+<div id="privacy-modal">
+    <div style="max-width: 300px; margin: 0 auto;">
+        <button onclick="hidePrivacy()" style="background:none; border:none; font-size:24px; cursor:pointer; float:right;">✕</button>
+        <h2 style="font-size: 1.2rem; margin-top:0;">Privacy Policy</h2>
+        <div style="font-size: 0.8rem; line-height: 1.6; color: #444;">
+            <p><strong>1. Data Collection:</strong> Operates entirely in your browser. No personal data collected.</p>
+            <p><strong>2. Amazon Associates:</strong> Site participates in the Amazon Associates Program.</p>
+            <p><strong>3. Cookies:</strong> Amazon may use cookies to track clicks.</p>
+        </div>
+    </div>
+</div>
+
+<div id="toast">Copied!</div>
+
+<script>
+    let pool = [], matches = [];
+    const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
+    const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
+    const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
+
+    const TYPO_MAP = {
+        "tierd": "tired", "girlic": "garlic", "garic": "garlic", "onoin": "onion", "chiken": "chicken",
+        "spinnach": "spinach", "pototo": "potato", "tomata": "tomato", "bif": "beef"
+    };
+
+    const ROBO_LAZY = ["Go to a local Diner. 🍔", "Chinese Takeout is calling your name... 🥡", "Netflix and Cereal. 🥣", "Just sleep. Dinner is overrated. 💤"];
+    const ROBO_SICK = ["Drink warm tea and go to bed. 🍵", "Chicken soup is your only friend. 🥣"];
+    const ROBO_HANGOVER = ["Drink water. Eat grease. Pray. 🍔", "Delivery Pizza will save your life. 🍕"];
+    const EMPTY_MSGS = ["Your fridge is an empty abyss. 🥚", "Try again with real food. 👨‍🍳"];
+
+    window.onload = async () => {
+        try { pool = await (await fetch('menu.json')).json(); } catch(e) {}
+    };
+
+    function toggleCl() {
+        const input = document.getElementById('in');
+        document.getElementById('cl').style.display = input.value ? 'block' : 'none';
+        const val = input.value.toLowerCase().trim();
+        const btn = document.getElementById('btn');
+        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
+        keywords = keywords.map(k => TYPO_MAP[k] || k);
+        const isSpecial = keywords.some(k => LAZY_WORDS.includes(k) || SICK_WORDS.includes(k) || HANGOVER_WORDS.includes(k));
+        btn.innerText = isSpecial ? "I'll help you..." : "Inspire Me";
+    }
+
+    let cycleTimer, isHolding = false, longPressTriggered = false;
+    const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
+
+    function startHold(e) {
+        if(e && e.button !== undefined && e.button !== 0) return;
+        isHolding = true; longPressTriggered = false;
+        let textIndex = 0;
+        const btn = document.getElementById('btn');
+        cycleTimer = setInterval(() => {
+            if(!isHolding) return;
+            btn.innerText = btnTexts[textIndex];
+            textIndex++;
+            if(textIndex >= btnTexts.length) {
+                clearInterval(cycleTimer);
+                longPressTriggered = true;
+                document.getElementById('in').value = 'lazy';
+                toggleCl(); find();
             }
-        });
+        }, 600);
+    }
 
-        function findRecipe() {
-            const ingredients = document.getElementById('ingredients').value;
-            const resultDiv = document.getElementById('result');
-            
-            if (!ingredients) {
-                resultDiv.innerText = "Please enter some ingredients.";
-                return;
-            }
+    function endHold(e) {
+        isHolding = false; clearInterval(cycleTimer);
+        if (!longPressTriggered) find();
+        toggleCl(); 
+    }
 
-            const query = encodeURIComponent(ingredients + " recipes");
-            const searchUrl = `https://www.google.com/search?q=${query}`;
-            
-            resultDiv.innerHTML = `Searching for: <strong>${ingredients}</strong>...<br><br>` +
-                                `<button onclick="window.open('${searchUrl}', '_blank')" style="background:#555; padding:10px; font-size:14px;">Open Results</button>`;
+    function cancelHold(e) { isHolding = false; clearInterval(cycleTimer); toggleCl(); }
+    function clearAll() { document.getElementById('in').value = ''; document.getElementById('result-area').innerHTML = ''; toggleCl(); }
+
+    function find() {
+        let val = document.getElementById('in').value.toLowerCase().trim();
+        if(!val) return;
+        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
+        keywords = keywords.map(k => TYPO_MAP[k] || k);
+        
+        let specialMsg = null;
+        if (keywords.some(k => LAZY_WORDS.includes(k))) {
+            specialMsg = ROBO_LAZY[Math.floor(Math.random()*ROBO_LAZY.length)];
+        } else if (keywords.some(k => SICK_WORDS.includes(k))) {
+            specialMsg = ROBO_SICK[Math.floor(Math.random()*ROBO_SICK.length)];
+        } else if (keywords.some(k => HANGOVER_WORDS.includes(k))) {
+            specialMsg = ROBO_HANGOVER[Math.floor(Math.random()*ROBO_HANGOVER.length)];
         }
-    </script>
+
+        if (specialMsg) {
+            const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
+            matches = [
+                { name: specialMsg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true },
+                quickOnes[0] || { name: "Toast", time: "3 MIN", vibe: "Survival" }, 
+                quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival" }
+            ];
+        } else {
+            matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
+        }
+        display();
+    }
+
+    function display() {
+        const out = document.getElementById('result-area');
+        if(matches.length === 0) {
+            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)]}</div>`;
+            return;
+        }
+        let pickup = matches[0]?.isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
+        out.innerHTML = pickup.map(r => `
+            <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
+                <span class="name" onclick="copy('${r.name}')">${r.name}</span>
+                <div class="tag-group">
+                    <span class="tag">${r.time}</span>
+                    <span class="tag tag-vibe">${r.vibe}</span>
+                </div>
+                ${r.isSpecial ? '' : `<a href="https://www.amazon.com/s?k=${r.name}+kit" target="_blank" class="amazon-link">🛒 Shop ingredients</a>`}
+            </div>
+        `).join('');
+    }
+
+    function showPrivacy() { document.getElementById('privacy-modal').style.display = 'block'; }
+    function hidePrivacy() { document.getElementById('privacy-modal').style.display = 'none'; }
+    function showInstall() { document.getElementById('install-modal').style.display = 'flex'; }
+    function hideInstall() { document.getElementById('install-modal').style.display = 'none'; }
+    async function copy(t) {
+        try { await navigator.clipboard.writeText(t); const s = document.getElementById('toast'); s.style.display = 'block'; setTimeout(() => { s.style.display = 'none'; }, 1500); } catch(e) {}
+    }
+</script>
 </body>
 </html>
