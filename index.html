@@ -32,7 +32,7 @@
         .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid #eee; padding-top: 15px; width: 100%; display: block; font-weight: bold; }
         .card-lazy .amazon-link { color: #aaa; border-top-color: #333; }
         
-        /* New Ko-fi Button Style */
+        /* Ko-fi Button Style */
         .kofi-btn { display: inline-block; background-color: #111; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 15px; font-weight: 700; font-size: 14px; margin-bottom: 25px; transition: 0.2s; }
         .kofi-btn:active { opacity: 0.8; transform: scale(0.95); }
 
@@ -116,8 +116,18 @@
     const ROBO_HANGOVER = ["Drink water. Eat grease. Pray. 🍔", "Delivery Pizza will save your life. 🍕"];
     const EMPTY_MSGS = ["Your fridge is an empty abyss. 🥚", "Try again with real food. 👨‍🍳"];
 
+    // 修正：placeholderのアニメーションロジックを追加
     window.onload = async () => {
+        // menu.jsonの読み込み（元のロジック）
         try { pool = await (await fetch('menu.json')).json(); } catch(e) {}
+
+        // 修正点：3秒後に', lazy'を追記
+        setTimeout(() => {
+            const input = document.getElementById('in');
+            if (input && input.placeholder === "beef, onion") {
+                input.placeholder += ", lazy";
+            }
+        }, 3000);
     };
 
     function toggleCl() {
