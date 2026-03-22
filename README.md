@@ -1,7 +1,15 @@
 # Fridge Combo
-Find perfect recipes from your fridge. A minimalist recipe suggester that puts your ingredients first.
+Input ingredients you have, get recipe ideas instantly. No recipes to scroll, just inspiration.
 
-### 🛠 Fridge Combo Standard
-* **Ingredient-First**: Focus on what you have, not what you need to buy.
-* **Minimalist UI**: White background, black buttons, 15px rounded corners.
-* **Privacy First**: No login, No tracking, No ads.
+## Philosophy
+* **1 Tool, 1 Action.**
+* **No Login / No Ads / No Tracking**
+* **Browser-only Privacy** (Works on low-spec devices)
+
+## How to Use
+1. Enter the ingredients in your fridge.
+2. Get instant cooking ideas.
+
+---
+No login / No tracking / No ads / Browser only Privacy Policy  
+**afrorakda © 2026**
