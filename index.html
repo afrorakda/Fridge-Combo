@@ -5,259 +5,276 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>Fridge Combo</title>
+    <title>afrorakda Hub</title>
     
     <link rel="icon" href="image_1.png">
     <link rel="apple-touch-icon" href="image_1.png">
 
     <style>
-        :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; }
-        
-        /* デザイン憲法：長押し選択禁止と基本スタイル */
-        * { 
-            -webkit-touch-callout: none !important; 
-            -webkit-user-select: none !important; 
-            user-select: none !important; 
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --main: #333;
+            --bg: #fff;
+            --accent: #eee;
+            --input-bg: #fafafa;
+            --radius: 15px;
         }
 
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg); display: flex; justify-content: center; 
-            padding: 20px; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; 
+            background-color: var(--bg); 
+            margin: 0; 
+            color: var(--main); 
+            -webkit-font-smoothing: antialiased; 
+            display: flex; 
+            justify-content: center; 
         }
-
-        .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; position: relative; }
         
-        /* 構造：左上独立Hubボタン */
-        .hub-link { 
-            text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main); 
-            background: var(--accent); padding: 8px 15px; border-radius: var(--radius); 
-            align-self: flex-start; margin-bottom: 20px; transition: 0.2s; cursor: pointer; 
+        .container { 
+            width: 100%; 
+            max-width: 600px; 
+            padding: 30px 15px; 
+            box-sizing: border-box; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
         }
-        .hub-link:active { transform: scale(0.95); }
-
-        header { margin-bottom: 25px; }
-        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 0 0 5px; }
+        
+        header { text-align: left; margin-bottom: 25px; padding-left: 5px; }
+        .title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+        h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        .progress-badge { background: var(--main); color: #fff; padding: 2px 10px; border-radius: var(--radius); font-size: 0.7rem; font-weight: 800; }
         .subtitle { font-size: 0.85rem; color: #666; font-weight: 500; }
 
-        .input-group { position: relative; margin-bottom: 18px; }
-        
-        /* デザイン憲法：iOS Safari対策込の入力エリア */
-        .input-box { 
-            width: 100%; padding: 18px 50px 18px 18px; border: 2px solid var(--accent); 
-            border-radius: var(--radius); box-sizing: border-box; font-size: 16px; font-weight: 600; 
-            outline: none; transition: 0.2s; background: var(--input-bg);
-            -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important;
-            user-select: auto !important; -webkit-user-select: auto !important; /* 入力は許可 */
+        .search-wrapper { margin-bottom: 25px; padding: 0 5px; position: relative; }
+        .search-input {
+            width: 100%; padding: 15px 45px 15px 20px; border: 2px solid var(--accent);
+            border-radius: var(--radius); background: var(--input-bg);
+            font-size: 1rem; font-weight: 600; color: var(--main);
+            box-sizing: border-box; outline: none; 
+            -webkit-appearance: none;
+            -webkit-text-fill-color: var(--main);
+            opacity: 1 !important;
         }
-        .input-box:focus { border-color: var(--main); }
-        .input-box::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; }
+        .search-input::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; opacity: 1; }
 
-        .btn-clear { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; color: #ccc; cursor: pointer; display: none; padding: 5px; }
-
-        /* デザイン憲法：メインボタン */
-        .btn-main { 
-            width: 100%; padding: 18px; background-color: var(--main); color: white; 
-            border: none; border-radius: var(--radius); font-size: 16px; font-weight: 800; 
-            cursor: pointer; margin-bottom: 30px; transition: 0.2s; -webkit-appearance: none; 
+        .clr-btn { 
+            position: absolute; right: 15px; top: 50%; transform: translateY(-50%); 
+            background: none; border: none; font-size: 20px; color: #ccc; 
+            cursor: pointer; padding: 5px; display: none; 
         }
-        .btn-main:active { opacity: 0.9; transform: scale(0.98); }
 
-        #result-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
-        .card { background: #fafafa; padding: 22px; border-radius: var(--radius); border: 1px solid var(--accent); animation: fadeIn 0.4s ease; position: relative; }
-        .card-lazy { background: var(--main); color: #fff; border: none; }
-        .name { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 12px; cursor: pointer; }
-        .tag-group { display: flex; gap: 6px; margin-bottom: 18px; }
-        .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; background: #eee; color: #444; font-weight: 700; }
-        .tag-vibe { background: var(--main); color: #fff; }
-        .card-lazy .tag { background: #444; color: #ccc; }
-        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid var(--accent); padding-top: 15px; width: 100%; display: block; font-weight: bold; }
-        .card-lazy .amazon-link { color: #aaa; border-top-color: #444; }
-        
-        /* 鉄壁フッター：スタイル */
-        footer { margin-top: auto; padding: 30px 0 20px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 12px; color: #666; font-weight: 600; }
-        .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .kofi-btn { background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; }
-        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 12px; border-radius: var(--radius); font-weight: 800; font-size: 13px; cursor: pointer; width: 100%; }
-        .footer-info { line-height: 1.6; }
-        .footer-info a { color: inherit; text-decoration: underline; }
+        .selection-title { font-size: 0.75rem; font-weight: 800; color: #999; margin: 0 0 10px 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .selection-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 30px; padding: 0 5px; }
+        .select-card { 
+            text-decoration: none; background: var(--input-bg); border: 2px solid var(--accent); 
+            border-radius: var(--radius); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
+            transition: 0.2s;
+        }
+        .select-card:active { transform: scale(0.98); background: var(--accent); }
+        .card-info { display: flex; align-items: center; gap: 15px; }
+        .card-icon { font-size: 1.5rem; }
+        .card-text { text-align: left; }
+        .card-label { font-size: 0.9rem; font-weight: 800; color: var(--main); display: block; }
+        .card-sub { font-size: 0.7rem; color: #888; font-weight: 500; }
+        .arrow { color: #ccc; font-weight: 800; }
 
-        /* モーダル：15px角丸適用 */
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 30px; border-radius: var(--radius); position: relative; text-align: left; }
-        .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #888; cursor: pointer; }
+        .category-wrapper { display: flex; gap: 8px; overflow-x: auto; padding: 5px; margin-bottom: 20px; scrollbar-width: none; }
+        .category-wrapper::-webkit-scrollbar { display: none; }
+        .cat-btn { white-space: nowrap; padding: 8px 16px; border-radius: var(--radius); background: var(--accent); color: #666; font-size: 0.75rem; font-weight: 800; border: none; cursor: pointer; }
+        .cat-btn.active { background: var(--main); color: #fff; }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        @media (min-width: 500px) { .grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .tool-link { text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s; }
+        .tool-link:active { transform: scale(0.92); opacity: 0.8; }
+        .icon-box { width: 100%; aspect-ratio: 1/1; background: #fff; border: 1px solid #eee; border-radius: var(--radius); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .icon-box img { width: 100%; height: 100%; object-fit: cover; }
+        .tool-name { margin-top: 6px; font-size: 0.65rem; font-weight: 700; color: var(--main); text-align: center; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        #no-results { display: none; text-align: center; padding: 40px 0; color: #ccc; font-weight: 700; }
+
+        /* Footer System */
+        footer { margin-top: auto; padding: 50px 0 30px; text-align: center; border-top: 1px solid #f5f5f5; }
+        .kofi-btn { 
+            display: inline-block; background: var(--main); color: #fff; 
+            padding: 12px 24px; border-radius: var(--radius); text-decoration: none; 
+            font-weight: 800; margin-bottom: 20px; font-size: 14px; 
+        }
+        .footer-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+        .nav-link { font-size: 13px; font-weight: 800; color: var(--main); text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
         
-        #toast { position: fixed; bottom: 160px; left: 50%; transform: translateX(-50%); background: var(--main); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.85rem; font-weight: 700; display: none; z-index: 100; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .footer-info { font-size: 11px; color: #999; font-weight: 600; line-height: 1.6; margin-bottom: 15px; }
+        .footer-info a { color: var(--main); text-decoration: underline; }
+        .footer-line { font-size: 12px; color: var(--main); font-weight: 800; line-height: 1.5; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
 <div class="container">
-    <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
-
     <header>
-        <h1>Fridge Combo</h1>
-        <p class="subtitle">Just one (or more) ingredient for tonight's dinner idea.</p>
+        <div class="title-row">
+            <h1>afrorakda Hub</h1>
+            <span class="progress-badge">120 / 100</span>
+        </div>
+        <p class="subtitle">120+ Minimalist tools. No login. No ads.</p>
     </header>
 
-    <div class="input-group">
-        <input type="text" id="in" class="input-box" placeholder="beef, onion" onkeypress="if(event.key==='Enter') find()" oninput="toggleCl()">
-        <button id="cl" class="btn-clear" onclick="clearAll()">✕</button>
+    <div class="search-wrapper">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search tools..." oninput="handleInput(this)">
+        <button id="clearBtn" class="clr-btn" onclick="clearSearch()">&times;</button>
     </div>
-    
-    <button id="btn" class="btn-main" 
-        onpointerdown="startHold(event)" 
-        onpointerup="endHold(event)" 
-        onpointerleave="cancelHold(event)"
-        oncontextmenu="event.preventDefault();">Inspire Me</button>
-        
-    <div id="result-area"></div>
-    
-    <footer id="dynamic-footer">
-        <div class="footer-btns">
-            <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn" id="kofi-link">☕️buy me a coffee</a>
-            <button class="install-trigger" onclick="showModal()" id="install-text">Add to Home Screen</button>
+
+    <div id="selectionArea">
+        <p class="selection-title">Targeted Selection</p>
+        <div class="selection-grid">
+            <a href="#" class="select-card" onclick="setCategory('Text'); return false;">
+                <div class="card-info">
+                    <span class="card-icon">✍️</span>
+                    <div class="card-text">
+                        <span class="card-label">For SNS Marketers</span>
+                        <span class="card-sub">Cleaner, Word count, Line break...</span>
+                    </div>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+            <a href="#" class="select-card" onclick="setCategory('Life'); return false;">
+                <div class="card-info">
+                    <span class="card-icon">🏠</span>
+                    <div class="card-text">
+                        <span class="card-label">For Daily Life</span>
+                        <span class="card-sub">Unit price, Percentage, Roulette...</span>
+                    </div>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+            <a href="#" class="select-card" onclick="setCategory('Dev'); return false;">
+                <div class="card-info">
+                    <span class="card-icon">💻</span>
+                    <div class="card-text">
+                        <span class="card-label">For Developers</span>
+                        <span class="card-sub">QR Gen, JSON, Color Picker...</span>
+                    </div>
+                </div>
+                <span class="arrow">→</span>
+            </a>
         </div>
+    </div>
+
+    <div class="category-wrapper" id="categoryWrapper">
+        <button class="cat-btn active" onclick="setCategory('All')">All</button>
+        <button class="cat-btn" onclick="setCategory('Text')">Text</button>
+        <button class="cat-btn" onclick="setCategory('Calc')">Calc</button>
+        <button class="cat-btn" onclick="setCategory('Dev')">Dev</button>
+        <button class="cat-btn" onclick="setCategory('Design')">Design</button>
+        <button class="cat-btn" onclick="setCategory('Life')">Life</button>
+    </div>
+
+    <div id="no-results">No tools found.</div>
+
+    <div class="grid" id="toolGrid">
+        <a href="https://afrorakda.github.io/Fridge-Combo/" class="tool-link" data-name="Fridge Combo"><div class="icon-box"><img src="image_1.png"></div><span class="tool-name">Fridge Combo</span></a>
+        <a href="https://afrorakda.github.io/cross-ratio/" class="tool-link" data-name="Cross Ratio"><div class="icon-box"><img src="image_120.png"></div><span class="tool-name">Cross Ratio</span></a>
+    </div>
+
+    <footer>
+        <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️buy me a coffee</a>
+        
+        <div class="footer-nav">
+            <a href="https://afrorakda.github.io/" class="nav-link">HOME</a>
+            <a href="#" class="nav-link" onclick="alert('Add to Home Screen to install.'); return false;">INSTALL</a>
+        </div>
+
         <div class="footer-info">
-            No login / No tracking / No ads / Browser only<br>
-            <a href="https://afrorakda.com/privacy/" id="privacy-link">Privacy Policy</a><br>
-            <span id="copyright">Fridge Combo © 2026</span>
+            Free to use / Commercial use OK / No Warranty<br>
+            Read our <a href="https://afrorakda.github.io/privacy-policy.html">Privacy Policy</a>
+        </div>
+
+        <div class="footer-line">
+            🏠 | No login / No tracking / No ads / Browser only<br>
+            afrorakda © 2026
         </div>
     </footer>
 </div>
 
-<div id="modal" onclick="hideModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="close-x" onclick="hideModal()">×</span>
-        <h3 id="modal-title" style="margin-top:0;">Install App</h3>
-        <p id="modal-msg" style="font-size:14px; font-weight:600;">Add to your home screen for easy access.</p>
-        <p id="modal-ios" style="font-size:13px; color:#666;">iOS: Tap Share then 'Add to Home Screen'.</p>
-        <p id="modal-android" style="font-size:13px; color:#666;">Android: Tap Menu then 'Add to Home screen'.</p>
-    </div>
-</div>
-
-<div id="toast">Copied!</div>
-
 <script>
-    let pool = [], matches = [];
-    const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
-    const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
-    const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
-    const TYPO_MAP = { "tierd": "tired", "girlic": "garlic", "garic": "garlic", "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", "pototo": "potato", "tomata": "tomato", "bif": "beef" };
-    const ROBO_LAZY = ["Go to a local Diner. 🍔", "Chinese Takeout is calling your name... 🥡", "Netflix and Cereal. 🥣", "Just sleep. Dinner is overrated. 💤"];
-    const ROBO_SICK = ["Drink warm tea and go to bed. 🍵", "Chicken soup is your only friend. 🥣"];
-    const ROBO_HANGOVER = ["Drink water. Eat grease. Pray. 🍔", "Delivery Pizza will save your life. 🍕"];
-    const EMPTY_MSGS = ["Your fridge is an empty abyss. 🥚", "Try again with real food. 👨‍🍳"];
-
-    window.onload = async () => {
-        try { pool = await (await fetch('menu.json')).json(); } catch(e) {}
-        setTimeout(() => {
-            const input = document.getElementById('in');
-            if (input && input.placeholder === "beef, onion") { input.placeholder += ", lazy"; }
-        }, 3000);
-        loadFooter(); // 聖域ロジック呼び出し
+    let currentCategory = 'All';
+    const categoryMap = {
+        'Text': ['cleaner', 'echo', 'char', 'word', 'bullet', 'chopper', 'killer', 'converter', 'master', 'washer', 'scrub', 'liner', 'flip', 'memo', 'lorem', 'namer', 'mark', 'readable', 'plain-text', 'scrambler', 'sanitizer'],
+        'Calc': ['cost', 'price', 'budget', 'spending', 'limit', 'splitter', 'duo', 'multiplier', 'hour', 'rem-to-pixel', 'timestamp', 'metric', 'percentage', 'counter', 'offset', 'sec-to-clock', 'ratio', 'mix-ratio', 'cross-ratio'],
+        'Dev': ['json', 'csv', 'code', 'scrubber', 'status', 'cron', 'slug', 'generator', 'contrast', 'sync', 'scaler', 'link', 'url', 'bitrate', 'warrant', 'pure', 'http', 'hash', 'headers'],
+        'Design': ['image', 'resizer', 'color', 'snap', 'eye', 'icon', 'mask', 'font', 'ratio', 'privacy', 'gap', 'viewer', 'filter', 'blind', 'palette', 'mood'],
+        'Life': ['tabata', 'breath', 'anchor', 'unclench', 'reader', 'stone', 'mirror', 'roulette', 'pace', 'checker', 'guide', 'oven', 'stain', 'dose', 'ready', 'judge', 'fortune', 'thought', 'reset', 'leak', 'wake-up', 'pass-expiry', 'subs-quit', 'my-bad']
     };
 
-    function toggleCl() {
-        const input = document.getElementById('in');
-        document.getElementById('cl').style.display = input.value ? 'block' : 'none';
-        const val = input.value.toLowerCase().trim();
-        const btn = document.getElementById('btn');
-        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
-        keywords = keywords.map(k => TYPO_MAP[k] || k);
-        const isSpecial = keywords.some(k => LAZY_WORDS.includes(k) || SICK_WORDS.includes(k) || HANGOVER_WORDS.includes(k));
-        btn.innerText = isSpecial ? "I'll help you..." : "Inspire Me";
-    }
-
-    let cycleTimer, isHolding = false, longPressTriggered = false;
-    const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
-
-    function startHold(e) {
-        if(e && e.button !== undefined && e.button !== 0) return;
-        isHolding = true; longPressTriggered = false;
-        let textIndex = 0;
-        const btn = document.getElementById('btn');
-        cycleTimer = setInterval(() => {
-            if(!isHolding) return;
-            btn.innerText = btnTexts[textIndex];
-            textIndex++;
-            if(textIndex >= btnTexts.length) {
-                clearInterval(cycleTimer);
-                longPressTriggered = true;
-                document.getElementById('in').value = 'lazy';
-                toggleCl(); find();
+    function initCategories() {
+        document.querySelectorAll('.tool-link').forEach(tool => {
+            const url = tool.href.toLowerCase();
+            let category = 'Life';
+            for (const [cat, keywords] of Object.entries(categoryMap)) {
+                if (keywords.some(kw => url.includes(kw))) { category = cat; break; }
             }
-        }, 600);
+            tool.setAttribute('data-category', category);
+        });
     }
 
-    function endHold(e) { isHolding = false; clearInterval(cycleTimer); if (!longPressTriggered) find(); toggleCl(); }
-    function cancelHold(e) { isHolding = false; clearInterval(cycleTimer); toggleCl(); }
-    function clearAll() { document.getElementById('in').value = ''; document.getElementById('result-area').innerHTML = ''; toggleCl(); }
+    function handleInput(el) {
+        document.getElementById('clearBtn').style.display = el.value ? 'block' : 'none';
+        toggleSelection();
+        updateView();
+    }
 
-    function find() {
-        let val = document.getElementById('in').value.toLowerCase().trim();
-        if(!val) return;
-        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
-        keywords = keywords.map(k => TYPO_MAP[k] || k);
-        let specialMsg = null;
-        if (keywords.some(k => LAZY_WORDS.includes(k))) { specialMsg = ROBO_LAZY[Math.floor(Math.random()*ROBO_LAZY.length)]; }
-        else if (keywords.some(k => SICK_WORDS.includes(k))) { specialMsg = ROBO_SICK[Math.floor(Math.random()*ROBO_SICK.length)]; }
-        else if (keywords.some(k => HANGOVER_WORDS.includes(k))) { specialMsg = ROBO_HANGOVER[Math.floor(Math.random()*ROBO_HANGOVER.length)]; }
-        if (specialMsg) {
-            const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
-            matches = [{ name: specialMsg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true }, quickOnes[0] || { name: "Toast", time: "3 MIN", vibe: "Survival" }, quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival" }];
-        } else {
-            matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
+    function clearSearch() {
+        const input = document.getElementById('searchInput');
+        input.value = '';
+        document.getElementById('clearBtn').style.display = 'none';
+        toggleSelection();
+        input.focus();
+        updateView();
+    }
+
+    function setCategory(category) {
+        currentCategory = category;
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent === category);
+        });
+        toggleSelection();
+        updateView();
+        if (category !== 'All') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        display();
     }
 
-    function display() {
-        const out = document.getElementById('result-area');
-        if(matches.length === 0) {
-            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)]}</div>`;
-            return;
-        }
-        let pickup = matches[0]?.isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
-        out.innerHTML = pickup.map(r => `
-            <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
-                <span class="name" onclick="copy('${r.name}')">${r.name}</span>
-                <div class="tag-group">
-                    <span class="tag">${r.time}</span>
-                    <span class="tag tag-vibe">${r.vibe}</span>
-                </div>
-                ${r.isSpecial ? '' : `<a href="https://www.amazon.com/s?k=${r.name}+kit" target="_blank" class="amazon-link">🛒 Shop ingredients</a>`}
-            </div>
-        `).join('');
+    function toggleSelection() {
+        const query = document.getElementById('searchInput').value;
+        document.getElementById('selectionArea').style.display = (query || currentCategory !== 'All') ? 'none' : 'block';
     }
 
-    // 聖域ロジック：モーダル操作
-    function showModal() { document.getElementById('modal').style.display = 'flex'; }
-    function hideModal() { document.getElementById('modal').style.display = 'none'; }
+    function updateView() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const tools = document.querySelectorAll('.tool-link');
+        const grid = document.getElementById('toolGrid');
+        const noResults = document.getElementById('no-results');
+        let hasVisible = false;
 
-    // 聖域ロジック：footer.json 補助読み込み
-    async function loadFooter() {
-        try {
-            const response = await fetch('footer.json');
-            if (!response.ok) return;
-            const data = await response.json();
-            if(data.kofi) { document.getElementById('kofi-link').href = data.kofi.url; document.getElementById('kofi-link').textContent = data.kofi.text; }
-            if(data.install) {
-                document.getElementById('install-text').textContent = data.install.text;
-                document.getElementById('modal-title').textContent = data.install.title;
-                document.getElementById('modal-msg').textContent = data.install.msg;
-                document.getElementById('modal-ios').textContent = data.install.ios;
-                document.getElementById('modal-android').textContent = data.install.android;
+        tools.forEach(tool => {
+            const name = tool.getAttribute('data-name').toLowerCase();
+            const category = tool.getAttribute('data-category');
+            const matchesQuery = name.includes(query);
+            const matchesCategory = (currentCategory === 'All' || category === currentCategory);
+            if (matchesQuery && matchesCategory) {
+                tool.style.display = 'flex';
+                hasVisible = true;
+            } else {
+                tool.style.display = 'none';
             }
-            if(data.privacy) document.getElementById('privacy-link').href = data.privacy.url;
-        } catch (e) { console.error("Footer update skipped."); }
+        });
+        grid.style.display = hasVisible ? 'grid' : 'none';
+        noResults.style.display = hasVisible ? 'none' : 'block';
     }
 
-    async function copy(t) {
-        try { await navigator.clipboard.writeText(t); const s = document.getElementById('toast'); s.style.display = 'block'; setTimeout(() => { s.style.display = 'none'; }, 1500); } catch(e) {}
-    }
+    initCategories();
 </script>
+
 </body>
 </html>
