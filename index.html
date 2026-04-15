@@ -5,276 +5,411 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>afrorakda Hub</title>
+    <title>Fridge Combo</title>
     
     <link rel="icon" href="image_1.png">
     <link rel="apple-touch-icon" href="image_1.png">
 
     <style>
-        :root {
-            --main: #333;
-            --bg: #fff;
-            --accent: #eee;
-            --input-bg: #fafafa;
-            --radius: 15px;
-        }
+        :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; }
+        
+        /* 憲法：長押し選択禁止 */
+        * { -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; -webkit-tap-highlight-color: transparent; }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg); 
-            margin: 0; 
-            color: var(--main); 
-            -webkit-font-smoothing: antialiased; 
-            display: flex; 
-            justify-content: center; 
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; position: relative; }
         
-        .container { 
-            width: 100%; 
-            max-width: 600px; 
-            padding: 30px 15px; 
-            box-sizing: border-box; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-        }
-        
-        header { text-align: left; margin-bottom: 25px; padding-left: 5px; }
-        .title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-        h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; margin: 0; }
-        .progress-badge { background: var(--main); color: #fff; padding: 2px 10px; border-radius: var(--radius); font-size: 0.7rem; font-weight: 800; }
+        /* Hub連携 */
+        .hub-link { text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main); background: var(--accent); padding: 8px 15px; border-radius: var(--radius); align-self: flex-start; margin-bottom: 20px; transition: 0.2s; cursor: pointer; }
+        .hub-link:active { transform: scale(0.95); }
+
+        header { margin-bottom: 25px; }
+        h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.8px; margin: 0 0 5px; }
         .subtitle { font-size: 0.85rem; color: #666; font-weight: 500; }
 
-        .search-wrapper { margin-bottom: 25px; padding: 0 5px; position: relative; }
-        .search-input {
-            width: 100%; padding: 15px 45px 15px 20px; border: 2px solid var(--accent);
-            border-radius: var(--radius); background: var(--input-bg);
-            font-size: 1rem; font-weight: 600; color: var(--main);
-            box-sizing: border-box; outline: none; 
-            -webkit-appearance: none;
-            -webkit-text-fill-color: var(--main);
-            opacity: 1 !important;
+        .input-group { position: relative; margin-bottom: 18px; }
+        .input-box { 
+            width: 100%; padding: 18px 50px 18px 18px; border: 2px solid var(--accent); border-radius: var(--radius); box-sizing: border-box; font-size: 16px; font-weight: 600; outline: none; transition: 0.2s; background: var(--input-bg);
+            -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important; user-select: auto !important; -webkit-user-select: auto !important; 
         }
-        .search-input::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; opacity: 1; }
+        .input-box:focus { border-color: var(--main); }
+        .input-box::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; }
 
-        .clr-btn { 
-            position: absolute; right: 15px; top: 50%; transform: translateY(-50%); 
-            background: none; border: none; font-size: 20px; color: #ccc; 
-            cursor: pointer; padding: 5px; display: none; 
-        }
+        .btn-clear { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; color: #ccc; cursor: pointer; display: none; padding: 5px; }
 
-        .selection-title { font-size: 0.75rem; font-weight: 800; color: #999; margin: 0 0 10px 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .selection-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 30px; padding: 0 5px; }
-        .select-card { 
-            text-decoration: none; background: var(--input-bg); border: 2px solid var(--accent); 
-            border-radius: var(--radius); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
-            transition: 0.2s;
-        }
-        .select-card:active { transform: scale(0.98); background: var(--accent); }
-        .card-info { display: flex; align-items: center; gap: 15px; }
-        .card-icon { font-size: 1.5rem; }
-        .card-text { text-align: left; }
-        .card-label { font-size: 0.9rem; font-weight: 800; color: var(--main); display: block; }
-        .card-sub { font-size: 0.7rem; color: #888; font-weight: 500; }
-        .arrow { color: #ccc; font-weight: 800; }
+        .btn-main { width: 100%; padding: 18px; background-color: var(--main); color: white; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 800; cursor: pointer; margin-bottom: 30px; transition: 0.2s; }
+        .btn-main:active { opacity: 0.9; transform: scale(0.98); }
 
-        .category-wrapper { display: flex; gap: 8px; overflow-x: auto; padding: 5px; margin-bottom: 20px; scrollbar-width: none; }
-        .category-wrapper::-webkit-scrollbar { display: none; }
-        .cat-btn { white-space: nowrap; padding: 8px 16px; border-radius: var(--radius); background: var(--accent); color: #666; font-size: 0.75rem; font-weight: 800; border: none; cursor: pointer; }
-        .cat-btn.active { background: var(--main); color: #fff; }
-
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        @media (min-width: 500px) { .grid { grid-template-columns: repeat(5, 1fr); } }
-
-        .tool-link { text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s; }
-        .tool-link:active { transform: scale(0.92); opacity: 0.8; }
-        .icon-box { width: 100%; aspect-ratio: 1/1; background: #fff; border: 1px solid #eee; border-radius: var(--radius); overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .icon-box img { width: 100%; height: 100%; object-fit: cover; }
-        .tool-name { margin-top: 6px; font-size: 0.65rem; font-weight: 700; color: var(--main); text-align: center; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        #no-results { display: none; text-align: center; padding: 40px 0; color: #ccc; font-weight: 700; }
-
-        /* Footer System */
-        footer { margin-top: auto; padding: 50px 0 30px; text-align: center; border-top: 1px solid #f5f5f5; }
-        .kofi-btn { 
-            display: inline-block; background: var(--main); color: #fff; 
-            padding: 12px 24px; border-radius: var(--radius); text-decoration: none; 
-            font-weight: 800; margin-bottom: 20px; font-size: 14px; 
-        }
-        .footer-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
-        .nav-link { font-size: 13px; font-weight: 800; color: var(--main); text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
+        #result-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; }
+        .card { background: #fafafa; padding: 22px; border-radius: var(--radius); border: 1px solid var(--accent); animation: fadeIn 0.4s ease; position: relative; }
+        .card-lazy { background: var(--main); color: #fff; border: none; }
+        .name { font-size: 1.2rem; font-weight: 700; display: block; margin-bottom: 12px; cursor: pointer; }
+        .tag-group { display: flex; gap: 6px; margin-bottom: 18px; }
+        .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; background: #eee; color: #444; font-weight: 700; }
+        .tag-vibe { background: var(--main); color: #fff; }
+        .card-lazy .tag { background: #444; color: #ccc; }
+        .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid var(--accent); padding-top: 15px; width: 100%; display: block; font-weight: bold; }
         
-        .footer-info { font-size: 11px; color: #999; font-weight: 600; line-height: 1.6; margin-bottom: 15px; }
-        .footer-info a { color: var(--main); text-decoration: underline; }
-        .footer-line { font-size: 12px; color: var(--main); font-weight: 800; line-height: 1.5; }
+        /* 鉄壁フッター */
+        footer { margin-top: auto; padding: 30px 0 20px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 12px; color: #666; font-weight: 600; }
+        .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .kofi-btn { background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+        .install-trigger { background: var(--accent); color: var(--main); border: none; padding: 12px; border-radius: var(--radius); font-weight: 800; font-size: 13px; cursor: pointer; width: 100%; }
+        .footer-info { line-height: 1.6; }
+        .footer-info a { color: inherit; text-decoration: underline; }
+
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #fff; width: 85%; max-width: 340px; padding: 30px; border-radius: var(--radius); position: relative; text-align: left; }
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 24px; color: #888; cursor: pointer; }
+        #toast { position: fixed; bottom: 160px; left: 50%; transform: translateX(-50%); background: var(--main); color: white; padding: 12px 24px; border-radius: 25px; font-size: 0.85rem; font-weight: 700; display: none; z-index: 100; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div class="container">
+    <a href="https://afrorakda.github.io/" class="hub-link">🏠 Hub</a>
     <header>
-        <div class="title-row">
-            <h1>afrorakda Hub</h1>
-            <span class="progress-badge">120 / 100</span>
-        </div>
-        <p class="subtitle">120+ Minimalist tools. No login. No ads.</p>
+        <h1>Fridge Combo</h1>
+        <p class="subtitle">Just one (or more) ingredient for tonight's dinner idea.</p>
     </header>
 
-    <div class="search-wrapper">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search tools..." oninput="handleInput(this)">
-        <button id="clearBtn" class="clr-btn" onclick="clearSearch()">&times;</button>
+    <div class="input-group">
+        <input type="text" id="in" class="input-box" placeholder="beef, onion" onkeypress="if(event.key==='Enter') find()" oninput="toggleCl()">
+        <button id="cl" class="btn-clear" onclick="clearAll()">✕</button>
     </div>
-
-    <div id="selectionArea">
-        <p class="selection-title">Targeted Selection</p>
-        <div class="selection-grid">
-            <a href="#" class="select-card" onclick="setCategory('Text'); return false;">
-                <div class="card-info">
-                    <span class="card-icon">✍️</span>
-                    <div class="card-text">
-                        <span class="card-label">For SNS Marketers</span>
-                        <span class="card-sub">Cleaner, Word count, Line break...</span>
-                    </div>
-                </div>
-                <span class="arrow">→</span>
-            </a>
-            <a href="#" class="select-card" onclick="setCategory('Life'); return false;">
-                <div class="card-info">
-                    <span class="card-icon">🏠</span>
-                    <div class="card-text">
-                        <span class="card-label">For Daily Life</span>
-                        <span class="card-sub">Unit price, Percentage, Roulette...</span>
-                    </div>
-                </div>
-                <span class="arrow">→</span>
-            </a>
-            <a href="#" class="select-card" onclick="setCategory('Dev'); return false;">
-                <div class="card-info">
-                    <span class="card-icon">💻</span>
-                    <div class="card-text">
-                        <span class="card-label">For Developers</span>
-                        <span class="card-sub">QR Gen, JSON, Color Picker...</span>
-                    </div>
-                </div>
-                <span class="arrow">→</span>
-            </a>
+    
+    <button id="btn" class="btn-main" onpointerdown="startHold(event)" onpointerup="endHold(event)" onpointerleave="cancelHold(event)">Inspire Me</button>
+    <div id="result-area"></div>
+    
+    <footer id="dynamic-footer">
+        <div class="footer-btns">
+            <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn" id="kofi-link">☕️buy me a coffee</a>
+            <button class="install-trigger" onclick="showModal()" id="install-text">Add to Home Screen</button>
         </div>
-    </div>
-
-    <div class="category-wrapper" id="categoryWrapper">
-        <button class="cat-btn active" onclick="setCategory('All')">All</button>
-        <button class="cat-btn" onclick="setCategory('Text')">Text</button>
-        <button class="cat-btn" onclick="setCategory('Calc')">Calc</button>
-        <button class="cat-btn" onclick="setCategory('Dev')">Dev</button>
-        <button class="cat-btn" onclick="setCategory('Design')">Design</button>
-        <button class="cat-btn" onclick="setCategory('Life')">Life</button>
-    </div>
-
-    <div id="no-results">No tools found.</div>
-
-    <div class="grid" id="toolGrid">
-        <a href="https://afrorakda.github.io/Fridge-Combo/" class="tool-link" data-name="Fridge Combo"><div class="icon-box"><img src="image_1.png"></div><span class="tool-name">Fridge Combo</span></a>
-        <a href="https://afrorakda.github.io/cross-ratio/" class="tool-link" data-name="Cross Ratio"><div class="icon-box"><img src="image_120.png"></div><span class="tool-name">Cross Ratio</span></a>
-    </div>
-
-    <footer>
-        <a href="https://ko-fi.com/afrorakda" target="_blank" class="kofi-btn">☕️buy me a coffee</a>
-        
-        <div class="footer-nav">
-            <a href="https://afrorakda.github.io/" class="nav-link">HOME</a>
-            <a href="#" class="nav-link" onclick="alert('Add to Home Screen to install.'); return false;">INSTALL</a>
-        </div>
-
         <div class="footer-info">
-            Free to use / Commercial use OK / No Warranty<br>
-            Read our <a href="https://afrorakda.github.io/privacy-policy.html">Privacy Policy</a>
-        </div>
-
-        <div class="footer-line">
-            🏠 | No login / No tracking / No ads / Browser only<br>
-            afrorakda © 2026
+            No login / No tracking / No ads / Browser only<br>
+            <a href="https://afrorakda.com/privacy/" id="privacy-link">Privacy Policy</a><br>
+            <span id="copyright">Fridge Combo © 2026</span>
         </div>
     </footer>
 </div>
 
+<div id="modal" onclick="hideModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="close-x" onclick="hideModal()">×</span>
+        <h3 id="modal-title" style="margin-top:0;">Install App</h3>
+        <p id="modal-msg" style="font-size:14px; font-weight:600;">Add to your home screen for easy access.</p>
+        <p id="modal-ios" style="font-size:13px; color:#666;">iOS: Tap Share then 'Add to Home Screen'.</p>
+        <p id="modal-android" style="font-size:13px; color:#666;">Android: Tap Menu then 'Add to Home screen'.</p>
+    </div>
+</div>
+<div id="toast">Copied!</div>
+
 <script>
-    let currentCategory = 'All';
-    const categoryMap = {
-        'Text': ['cleaner', 'echo', 'char', 'word', 'bullet', 'chopper', 'killer', 'converter', 'master', 'washer', 'scrub', 'liner', 'flip', 'memo', 'lorem', 'namer', 'mark', 'readable', 'plain-text', 'scrambler', 'sanitizer'],
-        'Calc': ['cost', 'price', 'budget', 'spending', 'limit', 'splitter', 'duo', 'multiplier', 'hour', 'rem-to-pixel', 'timestamp', 'metric', 'percentage', 'counter', 'offset', 'sec-to-clock', 'ratio', 'mix-ratio', 'cross-ratio'],
-        'Dev': ['json', 'csv', 'code', 'scrubber', 'status', 'cron', 'slug', 'generator', 'contrast', 'sync', 'scaler', 'link', 'url', 'bitrate', 'warrant', 'pure', 'http', 'hash', 'headers'],
-        'Design': ['image', 'resizer', 'color', 'snap', 'eye', 'icon', 'mask', 'font', 'ratio', 'privacy', 'gap', 'viewer', 'filter', 'blind', 'palette', 'mood'],
-        'Life': ['tabata', 'breath', 'anchor', 'unclench', 'reader', 'stone', 'mirror', 'roulette', 'pace', 'checker', 'guide', 'oven', 'stain', 'dose', 'ready', 'judge', 'fortune', 'thought', 'reset', 'leak', 'wake-up', 'pass-expiry', 'subs-quit', 'my-bad']
+    // JSONデータを直接変数に統合
+    const pool = [
+        { "name": "Quick Beef Tacos", "time": "15 MIN", "vibe": "Mexican", "tags": "beef, spicy, beans, mexican", "affiliate_url": "https://amzn.to/3NoWeCb" },
+        { "name": "Slow Cooker Pot Roast", "time": "10 MIN PREP", "vibe": "Lazy Sunday", "tags": "beef, onion, slow cooker", "affiliate_url": "https://amzn.to/3NMoGxS" },
+        { "name": "Spaghetti Aglio e Olio", "time": "15 MIN", "vibe": "Italian", "tags": "garlic, pasta, spaghetti", "affiliate_url": "https://amzn.to/4sR1UDT" },
+        { "name": "Mac 'n' Cheese", "time": "15 MIN", "vibe": "Comfort", "tags": "pasta, macaroni, cheese" },
+        { "name": "Grilled Cheese Sandwich", "time": "5 MIN", "vibe": "Lazy" },
+        { "name": "Classic Cheeseburger", "time": "15 MIN", "vibe": "Meat Lover", "tags": "beef, burger" },
+        { "name": "Honey Garlic Salmon", "time": "10 MIN", "vibe": "Healthy", "tags": "fish, garlic" },
+        { "name": "Avocado Toast", "time": "5 MIN", "vibe": "Quick", "tags": "avocado, breakfast" },
+        { "name": "Beef Tacos", "time": "20 MIN", "vibe": "Family", "tags": "beef, mexican" },
+        { "name": "Chicken Quesadilla", "time": "15 MIN", "vibe": "Snack" },
+        { "name": "Baked Potato", "time": "10 MIN", "vibe": "Filling" },
+        { "name": "Tuna Melt Sandwich", "time": "10 MIN", "vibe": "Easy Lunch" },
+        { "name": "Chicken Caesar Salad", "time": "10 MIN", "vibe": "Light" },
+        { "name": "Beef Stir-fry", "time": "15 MIN", "vibe": "Quick Dinner" },
+        { "name": "Sloppy Joes", "time": "20 MIN", "vibe": "Retro" },
+        { "name": "Egg Salad Sandwich", "time": "10 MIN", "vibe": "Basic" },
+        { "name": "French Toast", "time": "10 MIN", "vibe": "Sweet" },
+        { "name": "Bacon & Egg Muffin", "time": "10 MIN", "vibe": "Breakfast" },
+        { "name": "Sheet Pan Chicken & Veggies", "time": "25 MIN", "vibe": "Healthy" },
+        { "name": "Bangers and Mash", "time": "20 MIN", "vibe": "British Classic" },
+        { "name": "Philly Cheesesteak", "time": "15 MIN", "vibe": "Meat Lover" },
+        { "name": "Creamy Mushroom Pasta", "time": "15 MIN", "vibe": "Italian" },
+        { "name": "Cauliflower Rice Stir-fry", "time": "10 MIN", "vibe": "Low Carb" },
+        { "name": "Buffalo Chicken Wings", "time": "20 MIN", "vibe": "Game Day" },
+        { "name": "Pork Chops with Apples", "time": "20 MIN", "vibe": "Dinner" },
+        { "name": "BLT Sandwich", "time": "5 MIN", "vibe": "Classic" },
+        { "name": "Shrimp Scampi", "time": "15 MIN", "vibe": "Fancy but Easy" },
+        { "name": "Cottage Pie", "time": "30 MIN", "vibe": "Filling" },
+        { "name": "Chicken Fajitas", "time": "20 MIN", "vibe": "Mexican" },
+        { "name": "Oatmeal with Berries", "time": "5 MIN", "vibe": "Healthy" },
+        { "name": "Tuna Salad Wrap", "time": "5 MIN", "vibe": "No Cook" },
+        { "name": "BBQ Pulled Pork Sandwich", "time": "10 MIN", "vibe": "Easy" },
+        { "name": "Eggplant Parmesan", "time": "25 MIN", "vibe": "Vegetarian" },
+        { "name": "Beef and Broccoli", "time": "15 MIN", "vibe": "Asian Style" },
+        { "name": "English Breakfast", "time": "15 MIN", "vibe": "Weekend" },
+        { "name": "Bean Quesadilla", "time": "10 MIN", "vibe": "Quick Snack" },
+        { "name": "Chicken Parmesan", "time": "25 MIN", "vibe": "Comfort" },
+        { "name": "Loaded Nachos", "time": "10 MIN", "vibe": "Party" },
+        { "name": "Pesto Pasta", "time": "12 MIN", "vibe": "Fresh", "tags": "pasta, spinach, basil" },
+        { "name": "Beef Sliders", "time": "15 MIN", "vibe": "Bite Size" },
+        { "name": "Greek Salad with Chicken", "time": "15 MIN", "vibe": "Healthy" },
+        { "name": "Fish Tacos", "time": "20 MIN", "vibe": "Summer Vibe" },
+        { "name": "Chicken Pot Pie", "time": "35 MIN", "vibe": "Warm" },
+        { "name": "Turkey Club Sandwich", "time": "10 MIN", "vibe": "Deli Style" },
+        { "name": "Spaghetti Meatballs", "time": "25 MIN", "vibe": "Classic" },
+        { "name": "Steak Bites with Butter", "time": "12 MIN", "vibe": "Fancy" },
+        { "name": "Caprese Chicken", "time": "20 MIN", "vibe": "Italian" },
+        { "name": "Mashed Potato Bowl", "time": "15 MIN", "vibe": "Soft" },
+        { "name": "Chili Con Carne", "time": "30 MIN", "vibe": "Spicy", "tags": "beef, beans, kidney beans" },
+        { "name": "Baked Salmon", "time": "15 MIN", "vibe": "Omega-3" },
+        { "name": "Ham and Cheese Croissant", "time": "5 MIN", "vibe": "Cafe Style" },
+        { "name": "Corned Beef Hash", "time": "15 MIN", "vibe": "Diner" },
+        { "name": "Veggie Stir-fry", "time": "12 MIN", "vibe": "Vegan" },
+        { "name": "BBQ Chicken Pizza", "time": "20 MIN", "vibe": "Fun" },
+        { "name": "Lemon Garlic Shrimp", "time": "10 MIN", "vibe": "Zesty" },
+        { "name": "Quinoa Salad", "time": "15 MIN", "vibe": "Superfood" },
+        { "name": "Teriyaki Chicken", "time": "20 MIN", "vibe": "Sweet & Salty" },
+        { "name": "Breakfast Burrito", "time": "15 MIN", "vibe": "Energizing" },
+        { "name": "Meatloaf", "time": "45 MIN", "vibe": "Traditional" },
+        { "name": "Garlic Bread", "time": "10 MIN", "vibe": "Side Dish" },
+        { "name": "Chicken Alfredo", "time": "20 MIN", "vibe": "Rich" },
+        { "name": "Stuffed Bell Peppers", "time": "30 MIN", "vibe": "Colorful" },
+        { "name": "Clam Chowder", "time": "25 MIN", "vibe": "Ocean Vibe" },
+        { "name": "Chicken Skewers", "time": "15 MIN", "vibe": "Grill" },
+        { "name": "Spinach Omelet", "time": "8 MIN", "vibe": "Healthy" },
+        { "name": "Beef Stew", "time": "60 MIN", "vibe": "Slow" },
+        { "name": "Tater Tots", "time": "15 MIN", "vibe": "Crispy" },
+        { "name": "Fried Rice", "time": "15 MIN", "vibe": "Leftover Magic" },
+        { "name": "Reuben Sandwich", "time": "12 MIN", "vibe": "Savory" },
+        { "name": "Grilled Asparagus", "time": "10 MIN", "vibe": "Green" },
+        { "name": "Chicken Noodle Soup", "time": "20 MIN", "vibe": "Healing" },
+        { "name": "Pulled Chicken Slider", "time": "15 MIN", "vibe": "Tasty" },
+        { "name": "Pasta Primavera", "time": "18 MIN", "vibe": "Veggie" },
+        { "name": "Buffalo Cauliflower", "time": "20 MIN", "vibe": "Spicy Veg" },
+        { "name": "Hot Dog", "time": "5 MIN", "vibe": "Street Food" },
+        { "name": "Zucchini Fritters", "time": "20 MIN", "vibe": "Homemade", "tags": "zucchini, veggie" },
+        { "name": "Mushroom Risotto", "time": "30 MIN", "vibe": "Creamy" },
+        { "name": "Steak Fries", "time": "20 MIN", "vibe": "Heavy" },
+        { "name": "Chicken Wrap", "time": "8 MIN", "vibe": "On the Go" },
+        { "name": "Broccoli Cheese Soup", "time": "20 MIN", "vibe": "Warm" },
+        { "name": "Pancake Stack", "time": "15 MIN", "vibe": "Happy Morning" },
+        { "name": "Garlic Butter Scallops", "time": "8 MIN", "vibe": "Luxury" },
+        { "name": "Ratatouille", "time": "40 MIN", "vibe": "French Style" },
+        { "name": "Chicken Wings", "time": "25 MIN", "vibe": "Crunchy" },
+        { "name": "Sweet Potato Fries", "time": "20 MIN", "vibe": "Sweet" },
+        { "name": "Beef Kabobs", "time": "15 MIN", "vibe": "Party Food" },
+        { "name": "Pasta Carbonara", "time": "15 MIN", "vibe": "Classic Italian" },
+        { "name": "Guacamole & Chips", "time": "5 MIN", "vibe": "Fresh" },
+        { "name": "Lentil Soup", "time": "30 MIN", "vibe": "Fiber Rich", "tags": "beans, lentils" },
+        { "name": "Grilled Portobello", "time": "12 MIN", "vibe": "Earthy" },
+        { "name": "Chicken Lettuce Wraps", "time": "15 MIN", "vibe": "Light" },
+        { "name": "Poached Eggs", "time": "8 MIN", "vibe": "Soft" },
+        { "name": "Hummus with Pita", "time": "5 MIN", "vibe": "No Cook", "tags": "chickpeas, beans, vegan" },
+        { "name": "Roast Beef Sandwich", "time": "10 MIN", "vibe": "Hearty" },
+        { "name": "Cauliflower Wings", "time": "25 MIN", "vibe": "Veggie Fun" },
+        { "name": "Apple Walnut Salad", "time": "10 MIN", "vibe": "Crunchy" },
+        { "name": "Baked Cod", "time": "15 MIN", "vibe": "Simple Fish" },
+        { "name": "Onion Rings", "time": "15 MIN", "vibe": "Snack", "tags": "onion, fried" },
+        { "name": "Pasta Bolognese", "time": "25 MIN", "vibe": "Filling" },
+        { "name": "Breakfast Parfait", "time": "5 MIN", "vibe": "Cold" },
+        { "name": "Garlic Shrimp Pasta", "time": "15 MIN", "vibe": "Fancy" },
+        { "name": "Fried Chicken Sandwich", "time": "20 MIN", "vibe": "Crispy" },
+        { "name": "Roasted Tomatoes & Basil", "time": "15 MIN", "vibe": "Side Dish" },
+        { "name": "Zucchini Noodles (Zoodles)", "time": "8 MIN", "vibe": "Low Carb" },
+        { "name": "Broccoli & Carrot Stir-fry", "time": "10 MIN", "vibe": "Healthy", "tags": "carrot, broccoli, veggie" },
+        { "name": "Onion & Tomato Salad", "time": "5 MIN", "vibe": "Quick" },
+        { "name": "Garlic Butter Broccoli", "time": "8 MIN", "vibe": "Basic Veg" },
+        { "name": "Tomato & Mozzarella Salad", "time": "5 MIN", "vibe": "Fresh", "tags": "tomato, salad" },
+        { "name": "Glazed Carrots with Honey", "time": "15 MIN", "vibe": "Sweet Veg" },
+        { "name": "Zucchini Parmesan Bake", "time": "25 MIN", "vibe": "Comfort Veg" },
+        { "name": "Onion Soup with Cheese", "time": "30 MIN", "vibe": "Cozy" },
+        { "name": "Roasted Zucchini Sticks", "time": "15 MIN", "vibe": "Crispy Veg" },
+        { "name": "Tomato & Zucchini Pasta", "time": "15 MIN", "vibe": "Light Dinner" },
+        { "name": "Chicken & Carrot Soup", "time": "20 MIN", "vibe": "Healing" },
+        { "name": "Fried Tomato Sandwich", "time": "5 MIN", "vibe": "Quick" },
+        { "name": "Zucchini & Carrot Fritters", "time": "20 MIN", "vibe": "Homemade" },
+        { "name": "Carrot & Broccoli Slaw", "time": "10 MIN", "vibe": "Crunchy salad" },
+        { "name": "Baked Tomatoes with Cheese", "time": "10 MIN", "vibe": "Easy side" },
+        { "name": "Onion & Bacon Quesadilla", "time": "10 MIN", "vibe": "Tasty Snack" },
+        { "name": "Broccoli & Chicken Pasta", "time": "15 MIN", "vibe": "Classic" },
+        { "name": "Roasted Vegetable Medley", "time": "20 MIN", "vibe": "Healthy" },
+        { "name": "Zucchini Bread", "time": "45 MIN", "vibe": "Baking" },
+        { "name": "Creamy Tomato Pasta", "time": "15 MIN", "vibe": "Italian Comfort" },
+        { "name": "Carrot Sticks with Hummus", "time": "5 MIN", "vibe": "No Cook" },
+        { "name": "French Onion Sandwich", "time": "15 MIN", "vibe": "Cheesy" },
+        { "name": "Broccoli & Cheese Quiche", "time": "35 MIN", "vibe": "Brunch" },
+        { "name": "Tomato Basil Chicken", "time": "20 MIN", "vibe": "Zesty" },
+        { "name": "Zucchini Soup", "time": "20 MIN", "vibe": "Creamy veg" },
+        { "name": "Honey Roasted Carrots", "time": "20 MIN", "vibe": "Glazed" },
+        { "name": "Steamed Broccoli with Lemon", "time": "5 MIN", "vibe": "Clean", "tags": "broccoli, lemon" },
+        { "name": "Sheet Pan Chicken & Carrots", "time": "25 MIN", "vibe": "One Pan Dinner" },
+        { "name": "Zucchini Boat with Cheese", "time": "20 MIN", "vibe": "Fun" },
+        { "name": "Tomato and Onion Salad", "time": "5 MIN", "vibe": "Basic" },
+        { "name": "Broccoli Salad with Bacon", "time": "10 MIN", "vibe": "Party side" },
+        { "name": "Pan-Fried Carrots & Zucchini", "time": "10 MIN", "vibe": "Side Dish" },
+        { "name": "Onion Tart", "time": "30 MIN", "vibe": "Fancy Lunch" },
+        { "name": "Baked Broccoli Tots", "time": "20 MIN", "vibe": "Healthy Snack" },
+        { "name": "Quick Tomato Sandwich", "time": "5 MIN", "vibe": "Lazy lunch" },
+        { "name": "Zucchini and Ham Omelet", "time": "10 MIN", "vibe": "Breakfast" },
+        { "name": "Beef and Carrot Stew", "time": "60 MIN", "vibe": "Slow cook" },
+        { "name": "Baked Beans on Toast", "time": "5 MIN", "vibe": "Lazy Morning", "tags": "beans, white beans, breakfast" },
+        { "name": "Pork and Beans", "time": "20 MIN", "vibe": "Retro", "tags": "pork, beans" },
+        { "name": "Three Bean Salad", "time": "10 MIN", "vibe": "Fresh", "tags": "beans, chickpeas, kidney beans" },
+        { "name": "Chickpea Curry", "time": "20 MIN", "vibe": "Vegan", "tags": "chickpeas, beans, curry" },
+        { "name": "Baby Spinach Salad", "time": "5 MIN", "vibe": "Ultra Quick", "tags": "spinach, leaf, fresh" },
+        { "name": "Sauteed Spinach with Garlic", "time": "8 MIN", "vibe": "Side Dish", "tags": "spinach, leaf, garlic" },
+        { "name": "Egg Sandwich", "time": "8 MIN", "vibe": "Basic", "tags": "egg, breakfast" },
+        { "name": "Cereal with Milk", "time": "2 MIN", "vibe": "Survival", "tags": "breakfast, snack" }  ,
+        { "name": "Garlic Butter Baby Spinach", "time": "5 MIN", "vibe": "Side Dish", "tags": "spinach, garlic, butter, veggie" },
+        { "name": "Spinach & Mushroom Omelet", "time": "10 MIN", "vibe": "Breakfast", "tags": "spinach, egg, mushroom, morning" },
+        { "name": "Creamy Spinach Pasta", "time": "15 MIN", "vibe": "Rich", "tags": "spinach, pasta, cream, cheese" },
+        { "name": "Spinach, Apple & Walnut Salad", "time": "5 MIN", "vibe": "Healthy", "tags": "spinach, apple, salad, fresh" },
+        { "name": "Spinach Quesadilla", "time": "10 MIN", "vibe": "Snack", "tags": "spinach, cheese, mexican" }  ,
+        { "name": "Classic Tomato Soup", "time": "20 MIN", "vibe": "Cozy", "tags": "tomato, soup, warm" },
+        { "name": "Tomato Basil Bruschetta", "time": "10 MIN", "vibe": "Appetizer", "tags": "tomato, basil, bread, fresh" },
+        { "name": "Fresh Caprese Salad", "time": "5 MIN", "vibe": "Italian", "tags": "tomato, mozzarella, basil, cheese" },
+        { "name": "Cherry Tomato Pasta", "time": "15 MIN", "vibe": "Light", "tags": "tomato, pasta, garlic" },
+        { "name": "Stuffed Baked Tomatoes", "time": "30 MIN", "vibe": "Healthy", "tags": "tomato, rice, bake" },
+        { "name": "Creamy Mashed Potatoes", "time": "20 MIN", "vibe": "Comfort", "tags": "potato, butter, milk" },
+        { "name": "Crispy Hash Browns", "time": "15 MIN", "vibe": "Breakfast", "tags": "potato, breakfast, crispy" },
+        { "name": "Loaded Baked Potato", "time": "45 MIN", "vibe": "Filling", "tags": "potato, cheese, bacon" },
+        { "name": "Homemade Potato Salad", "time": "20 MIN", "vibe": "Picnic", "tags": "potato, mayo, egg" },
+        { "name": "Garlic Herb Potato Wedges", "time": "30 MIN", "vibe": "Snack", "tags": "potato, bake, garlic" },
+        { "name": "Potato and Leek Soup", "time": "25 MIN", "vibe": "Warm", "tags": "potato, soup, leek" }  ,
+        { "name": "Garlic Butter Lamb Chops", "time": "20 MIN", "vibe": "Fancy", "tags": "lamb, meat, garlic, butter" },
+        { "name": "Spicy Lamb Curry", "time": "40 MIN", "vibe": "Spicy", "tags": "lamb, curry, spicy" },
+        { "name": "Roast Lamb Leg", "time": "90 MIN", "vibe": "Sunday Roast", "tags": "lamb, roast, family" },
+        { "name": "Shepherd's Pie", "time": "45 MIN", "vibe": "Comfort", "tags": "lamb, potato, bake" },
+        { "name": "Greek Lamb Gyros", "time": "25 MIN", "vibe": "Street Food", "tags": "lamb, bread, onion" },
+        { "name": "Four Cheese Pizza", "time": "20 MIN", "vibe": "Cheesy", "tags": "cheese, pizza, bake" },
+        { "name": "Baked Camembert", "time": "15 MIN", "vibe": "Appetizer", "tags": "cheese, dip, warm" },
+        { "name": "Mozzarella Sticks", "time": "10 MIN", "vibe": "Snack", "tags": "cheese, fry, crispy" },
+        { "name": "Cheese Fondue", "time": "20 MIN", "vibe": "Party", "tags": "cheese, dip, fun" },
+        { "name": "Brie and Apple Toast", "time": "5 MIN", "vibe": "Quick Snack", "tags": "cheese, apple, bread" },
+        { "name": "Classic Eggs Benedict", "time": "20 MIN", "vibe": "Brunch", "tags": "egg, breakfast, fancy" },
+        { "name": "Spicy Shakshuka", "time": "25 MIN", "vibe": "Middle East", "tags": "egg, tomato, spicy" },
+        { "name": "Creamy Deviled Eggs", "time": "15 MIN", "vibe": "Party", "tags": "egg, mayo, snack" },
+        { "name": "Fluffy Tamagoyaki", "time": "10 MIN", "vibe": "Japanese", "tags": "egg, roll, sweet" },
+        { "name": "Vegetable Frittata", "time": "20 MIN", "vibe": "Healthy", "tags": "egg, veggie, bake" },
+        { "name": "Chicken Noodle Soup", "time": "30 MIN", "vibe": "Healing", "tags": "chicken, noodle, soup, warm" },
+        { "name": "Sloppy Joes", "time": "20 MIN", "vibe": "Retro", "tags": "beef, buns, onion" },
+        { "name": "Tuna Casserole", "time": "40 MIN", "vibe": "Baked", "tags": "tuna, macaroni, cheese, bake" },
+        { "name": "Chili Con Carne", "time": "45 MIN", "vibe": "Stew", "tags": "beef, beans, tomato, spicy" },
+        { "name": "Chicken Nuggets", "time": "25 MIN", "vibe": "Kids Favorite", "tags": "chicken, fried" },
+        { "name": "Pot Roast", "time": "120 MIN", "vibe": "Slow Cook", "tags": "beef, potato, carrot, onion" },
+        { "name": "Lasagna", "time": "90 MIN", "vibe": "Family", "tags": "pasta, beef, cheese, bake" },
+        { "name": "Quesadilla", "time": "10 MIN", "vibe": "Mexican", "tags": "tortilla, cheese, chicken" },
+        { "name": "American Goulash", "time": "30 MIN", "vibe": "One Pot", "tags": "beef, macaroni, tomato" },
+        { "name": "Pork Chops with Gravy", "time": "20 MIN", "vibe": "Meat Lover", "tags": "pork, milk, flour" },
+        { "name": "Salisbury Steak", "time": "30 MIN", "vibe": "Meat Lover", "tags": "beef, mushroom, onion" },
+        { "name": "Chicken and Dumplings", "time": "45 MIN", "vibe": "Stew", "tags": "chicken, flour, milk" },
+        { "name": "Green Bean Casserole", "time": "35 MIN", "vibe": "Baked", "tags": "green beans, mushroom, onion" }
+    ];
+
+    let matches = [];
+    const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
+    const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
+    const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
+    const TYPO_MAP = { "tierd": "tired", "girlic": "garlic", "garic": "garlic", "onoin": "onion", "chiken": "chicken", "spinnach": "spinach", "pototo": "potato", "tomata": "tomato", "bif": "beef" };
+    const ROBO_LAZY = ["Go to a local Diner. 🍔", "Chinese Takeout is calling your name... 🥡", "Netflix and Cereal. 🥣", "Just sleep. Dinner is overrated. 💤"];
+    const ROBO_SICK = ["Drink warm tea and go to bed. 🍵", "Chicken soup is your only friend. 🥣"];
+    const ROBO_HANGOVER = ["Drink water. Eat grease. Pray. 🍔", "Delivery Pizza will save your life. 🍕"];
+    const EMPTY_MSGS = ["Your fridge is an empty abyss. 🥚", "Try again with real food. 👨‍🍳"];
+
+    window.onload = () => {
+        setTimeout(() => {
+            const input = document.getElementById('in');
+            if (input && input.placeholder === "beef, onion") { input.placeholder += ", lazy"; }
+        }, 3000);
+        loadFooter();
     };
 
-    function initCategories() {
-        document.querySelectorAll('.tool-link').forEach(tool => {
-            const url = tool.href.toLowerCase();
-            let category = 'Life';
-            for (const [cat, keywords] of Object.entries(categoryMap)) {
-                if (keywords.some(kw => url.includes(kw))) { category = cat; break; }
-            }
-            tool.setAttribute('data-category', category);
-        });
+    function toggleCl() {
+        const input = document.getElementById('in');
+        document.getElementById('cl').style.display = input.value ? 'block' : 'none';
+        const val = input.value.toLowerCase().trim();
+        const btn = document.getElementById('btn');
+        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
+        keywords = keywords.map(k => TYPO_MAP[k] || k);
+        const isSpecial = keywords.some(k => LAZY_WORDS.includes(k) || SICK_WORDS.includes(k) || HANGOVER_WORDS.includes(k));
+        btn.innerText = isSpecial ? "I'll help you..." : "Inspire Me";
     }
 
-    function handleInput(el) {
-        document.getElementById('clearBtn').style.display = el.value ? 'block' : 'none';
-        toggleSelection();
-        updateView();
+    let cycleTimer, isHolding = false, longPressTriggered = false;
+    const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
+
+    function startHold(e) {
+        if(e && e.button !== undefined && e.button !== 0) return;
+        isHolding = true; longPressTriggered = false;
+        let textIndex = 0;
+        const btn = document.getElementById('btn');
+        cycleTimer = setInterval(() => {
+            if(!isHolding) return;
+            btn.innerText = btnTexts[textIndex];
+            textIndex++;
+            if(textIndex >= btnTexts.length) { clearInterval(cycleTimer); longPressTriggered = true; document.getElementById('in').value = 'lazy'; toggleCl(); find(); }
+        }, 600);
     }
 
-    function clearSearch() {
-        const input = document.getElementById('searchInput');
-        input.value = '';
-        document.getElementById('clearBtn').style.display = 'none';
-        toggleSelection();
-        input.focus();
-        updateView();
-    }
+    function endHold(e) { isHolding = false; clearInterval(cycleTimer); if (!longPressTriggered) find(); toggleCl(); }
+    function cancelHold(e) { isHolding = false; clearInterval(cycleTimer); toggleCl(); }
+    function clearAll() { document.getElementById('in').value = ''; document.getElementById('result-area').innerHTML = ''; toggleCl(); }
 
-    function setCategory(category) {
-        currentCategory = category;
-        document.querySelectorAll('.cat-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.textContent === category);
-        });
-        toggleSelection();
-        updateView();
-        if (category !== 'All') {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    function find() {
+        let val = document.getElementById('in').value.toLowerCase().trim();
+        if(!val) return;
+        let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
+        keywords = keywords.map(k => TYPO_MAP[k] || k);
+        let specialMsg = null;
+        if (keywords.some(k => LAZY_WORDS.includes(k))) { specialMsg = ROBO_LAZY[Math.floor(Math.random()*ROBO_LAZY.length)]; }
+        else if (keywords.some(k => SICK_WORDS.includes(k))) { specialMsg = ROBO_SICK[Math.floor(Math.random()*ROBO_SICK.length)]; }
+        else if (keywords.some(k => HANGOVER_WORDS.includes(k))) { specialMsg = ROBO_HANGOVER[Math.floor(Math.random()*ROBO_HANGOVER.length)]; }
+        
+        if (specialMsg) {
+            const quickOnes = pool.filter(r => parseInt(r.time) <= 10).sort(() => 0.5 - Math.random());
+            matches = [{ name: specialMsg, time: "0 MIN", vibe: "EAT OUT", isSpecial: true }, quickOnes[0] || { name: "Toast", time: "3 MIN", vibe: "Survival" }, quickOnes[1] || { name: "Water", time: "0 MIN", vibe: "Survival" }];
+        } else {
+            matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
         }
+        display();
     }
 
-    function toggleSelection() {
-        const query = document.getElementById('searchInput').value;
-        document.getElementById('selectionArea').style.display = (query || currentCategory !== 'All') ? 'none' : 'block';
+    function display() {
+        const out = document.getElementById('result-area');
+        if(matches.length === 0) {
+            out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)]}</div>`;
+            return;
+        }
+        let pickup = matches[0]?.isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
+        out.innerHTML = pickup.map(r => `
+            <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
+                <span class="name" onclick="copy('${r.name}')">${r.name}</span>
+                <div class="tag-group">
+                    <span class="tag">${r.time}</span>
+                    <span class="tag tag-vibe">${r.vibe}</span>
+                </div>
+                ${r.isSpecial ? '' : `<a href="${r.affiliate_url || 'https://www.amazon.com/s?k=' + r.name + '+kit'}" target="_blank" class="amazon-link">🛒 Shop ingredients</a>`}
+            </div>
+        `).join('');
     }
 
-    function updateView() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const tools = document.querySelectorAll('.tool-link');
-        const grid = document.getElementById('toolGrid');
-        const noResults = document.getElementById('no-results');
-        let hasVisible = false;
+    function showModal() { document.getElementById('modal').style.display = 'flex'; }
+    function hideModal() { document.getElementById('modal').style.display = 'none'; }
+    async function copy(t) { try { await navigator.clipboard.writeText(t); const s = document.getElementById('toast'); s.style.display = 'block'; setTimeout(() => s.style.display = 'none', 1500); } catch(e) {} }
 
-        tools.forEach(tool => {
-            const name = tool.getAttribute('data-name').toLowerCase();
-            const category = tool.getAttribute('data-category');
-            const matchesQuery = name.includes(query);
-            const matchesCategory = (currentCategory === 'All' || category === currentCategory);
-            if (matchesQuery && matchesCategory) {
-                tool.style.display = 'flex';
-                hasVisible = true;
-            } else {
-                tool.style.display = 'none';
+    async function loadFooter() {
+        try {
+            const response = await fetch('footer.json');
+            if (!response.ok) return;
+            const data = await response.json();
+            if(data.kofi) { document.getElementById('kofi-link').href = data.kofi.url; document.getElementById('kofi-link').textContent = data.kofi.text; }
+            if(data.install) {
+                document.getElementById('install-text').textContent = data.install.text;
+                document.getElementById('modal-title').textContent = data.install.title;
+                document.getElementById('modal-msg').textContent = data.install.msg;
+                document.getElementById('modal-ios').textContent = data.install.ios;
+                document.getElementById('modal-android').textContent = data.install.android;
             }
-        });
-        grid.style.display = hasVisible ? 'grid' : 'none';
-        noResults.style.display = hasVisible ? 'none' : 'block';
+            if(data.privacy) document.getElementById('privacy-link').href = data.privacy.url;
+        } catch (e) { console.error("Footer update skipped."); }
     }
-
-    initCategories();
 </script>
-
 </body>
 </html>
