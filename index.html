@@ -13,12 +13,7 @@
     <style>
         :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; }
         
-        * { 
-            -webkit-touch-callout: none !important; 
-            -webkit-user-select: none !important; 
-            user-select: none !important; 
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; -webkit-tap-highlight-color: transparent; }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; }
         .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; position: relative; }
@@ -36,10 +31,14 @@
             -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important; user-select: auto !important; -webkit-user-select: auto !important; 
         }
         .input-box:focus { border-color: var(--main); }
-        /* 透かしの色を濃く調整 */
-        .input-box::placeholder { color: #888; -webkit-text-fill-color: #888; }
+        /* 透かし：視認性を高めるため濃いグレー(#777)へ */
+        .input-box::placeholder { color: #777; -webkit-text-fill-color: #777; }
 
-        .btn-clear { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; color: #ccc; cursor: pointer; display: none; padding: 5px; }
+        /* クリアボタン：指が届きやすい右下に配置し、色も濃く調整 */
+        .btn-clear { 
+            position: absolute; right: 12px; bottom: 10px; 
+            background: rgba(100,100,100,0.9); border: none; font-size: 20px; font-weight: bold; color: white; cursor: pointer; display: none; width: 32px; height: 32px; border-radius: 50%; line-height: 32px; text-align: center; padding: 0; z-index: 10;
+        }
 
         .btn-main { width: 100%; padding: 18px; background-color: var(--main); color: white; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 800; cursor: pointer; margin-bottom: 30px; transition: 0.2s; }
         .btn-main:active { opacity: 0.9; transform: scale(0.98); }
