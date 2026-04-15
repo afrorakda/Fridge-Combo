@@ -13,13 +13,16 @@
     <style>
         :root { --main: #333; --bg: #fff; --accent: #eee; --input-bg: #fafafa; --radius: 15px; }
         
-        /* 憲法：長押し選択禁止 */
-        * { -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; -webkit-tap-highlight-color: transparent; }
+        * { 
+            -webkit-touch-callout: none !important; 
+            -webkit-user-select: none !important; 
+            user-select: none !important; 
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); display: flex; justify-content: center; padding: 20px; margin: 0; color: var(--main); -webkit-font-smoothing: antialiased; }
         .container { width: 100%; max-width: 380px; min-height: 98vh; display: flex; flex-direction: column; position: relative; }
         
-        /* Hub連携 */
         .hub-link { text-decoration: none; font-size: 0.8rem; font-weight: 800; color: var(--main); background: var(--accent); padding: 8px 15px; border-radius: var(--radius); align-self: flex-start; margin-bottom: 20px; transition: 0.2s; cursor: pointer; }
         .hub-link:active { transform: scale(0.95); }
 
@@ -33,7 +36,8 @@
             -webkit-appearance: none; -webkit-text-fill-color: var(--main); opacity: 1 !important; user-select: auto !important; -webkit-user-select: auto !important; 
         }
         .input-box:focus { border-color: var(--main); }
-        .input-box::placeholder { color: #bbb; -webkit-text-fill-color: #bbb; }
+        /* 透かしの色を濃く調整 */
+        .input-box::placeholder { color: #888; -webkit-text-fill-color: #888; }
 
         .btn-clear { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 20px; color: #ccc; cursor: pointer; display: none; padding: 5px; }
 
@@ -50,7 +54,6 @@
         .card-lazy .tag { background: #444; color: #ccc; }
         .amazon-link { font-size: 0.75rem; color: #0066c0; text-decoration: none; border-top: 1px solid var(--accent); padding-top: 15px; width: 100%; display: block; font-weight: bold; }
         
-        /* 鉄壁フッター */
         footer { margin-top: auto; padding: 30px 0 20px; text-align: center; border-top: 1px solid #f5f5f5; font-size: 12px; color: #666; font-weight: 600; }
         .footer-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .kofi-btn { background: var(--main); color: #fff; padding: 12px; border-radius: var(--radius); text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; }
@@ -79,7 +82,7 @@
         <button id="cl" class="btn-clear" onclick="clearAll()">✕</button>
     </div>
     
-    <button id="btn" class="btn-main" onpointerdown="startHold(event)" onpointerup="endHold(event)" onpointerleave="cancelHold(event)">Inspire Me</button>
+    <button id="btn" class="btn-main" onclick="find()">Inspire Me</button>
     <div id="result-area"></div>
     
     <footer id="dynamic-footer">
@@ -107,7 +110,6 @@
 <div id="toast">Copied!</div>
 
 <script>
-    // JSONデータを直接変数に統合
     const pool = [
         { "name": "Quick Beef Tacos", "time": "15 MIN", "vibe": "Mexican", "tags": "beef, spicy, beans, mexican", "affiliate_url": "https://amzn.to/3NoWeCb" },
         { "name": "Slow Cooker Pot Roast", "time": "10 MIN PREP", "vibe": "Lazy Sunday", "tags": "beef, onion, slow cooker", "affiliate_url": "https://amzn.to/3NMoGxS" },
@@ -256,12 +258,12 @@
         { "name": "Baby Spinach Salad", "time": "5 MIN", "vibe": "Ultra Quick", "tags": "spinach, leaf, fresh" },
         { "name": "Sauteed Spinach with Garlic", "time": "8 MIN", "vibe": "Side Dish", "tags": "spinach, leaf, garlic" },
         { "name": "Egg Sandwich", "time": "8 MIN", "vibe": "Basic", "tags": "egg, breakfast" },
-        { "name": "Cereal with Milk", "time": "2 MIN", "vibe": "Survival", "tags": "breakfast, snack" }  ,
+        { "name": "Cereal with Milk", "time": "2 MIN", "vibe": "Survival", "tags": "breakfast, snack" },
         { "name": "Garlic Butter Baby Spinach", "time": "5 MIN", "vibe": "Side Dish", "tags": "spinach, garlic, butter, veggie" },
         { "name": "Spinach & Mushroom Omelet", "time": "10 MIN", "vibe": "Breakfast", "tags": "spinach, egg, mushroom, morning" },
         { "name": "Creamy Spinach Pasta", "time": "15 MIN", "vibe": "Rich", "tags": "spinach, pasta, cream, cheese" },
         { "name": "Spinach, Apple & Walnut Salad", "time": "5 MIN", "vibe": "Healthy", "tags": "spinach, apple, salad, fresh" },
-        { "name": "Spinach Quesadilla", "time": "10 MIN", "vibe": "Snack", "tags": "spinach, cheese, mexican" }  ,
+        { "name": "Spinach Quesadilla", "time": "10 MIN", "vibe": "Snack", "tags": "spinach, cheese, mexican" },
         { "name": "Classic Tomato Soup", "time": "20 MIN", "vibe": "Cozy", "tags": "tomato, soup, warm" },
         { "name": "Tomato Basil Bruschetta", "time": "10 MIN", "vibe": "Appetizer", "tags": "tomato, basil, bread, fresh" },
         { "name": "Fresh Caprese Salad", "time": "5 MIN", "vibe": "Italian", "tags": "tomato, mozzarella, basil, cheese" },
@@ -272,7 +274,7 @@
         { "name": "Loaded Baked Potato", "time": "45 MIN", "vibe": "Filling", "tags": "potato, cheese, bacon" },
         { "name": "Homemade Potato Salad", "time": "20 MIN", "vibe": "Picnic", "tags": "potato, mayo, egg" },
         { "name": "Garlic Herb Potato Wedges", "time": "30 MIN", "vibe": "Snack", "tags": "potato, bake, garlic" },
-        { "name": "Potato and Leek Soup", "time": "25 MIN", "vibe": "Warm", "tags": "potato, soup, leek" }  ,
+        { "name": "Potato and Leek Soup", "time": "25 MIN", "vibe": "Warm", "tags": "potato, soup, leek" },
         { "name": "Garlic Butter Lamb Chops", "time": "20 MIN", "vibe": "Fancy", "tags": "lamb, meat, garlic, butter" },
         { "name": "Spicy Lamb Curry", "time": "40 MIN", "vibe": "Spicy", "tags": "lamb, curry, spicy" },
         { "name": "Roast Lamb Leg", "time": "90 MIN", "vibe": "Sunday Roast", "tags": "lamb, roast, family" },
@@ -303,7 +305,6 @@
         { "name": "Green Bean Casserole", "time": "35 MIN", "vibe": "Baked", "tags": "green beans, mushroom, onion" }
     ];
 
-    let matches = [];
     const LAZY_WORDS = ['lazy', 'tired', 'exhausted', 'chill', 'no energy', '疲れた', 'ダメだ'];
     const SICK_WORDS = ['sick', 'cold', 'fever', '風邪', '痛い'];
     const HANGOVER_WORDS = ['hangover', 'drunk', 'beer', '二日酔い', '酒'];
@@ -332,24 +333,6 @@
         btn.innerText = isSpecial ? "I'll help you..." : "Inspire Me";
     }
 
-    let cycleTimer, isHolding = false, longPressTriggered = false;
-    const btnTexts = ["I'm thinking...", "Don't be picky.", "Here we go!"];
-
-    function startHold(e) {
-        if(e && e.button !== undefined && e.button !== 0) return;
-        isHolding = true; longPressTriggered = false;
-        let textIndex = 0;
-        const btn = document.getElementById('btn');
-        cycleTimer = setInterval(() => {
-            if(!isHolding) return;
-            btn.innerText = btnTexts[textIndex];
-            textIndex++;
-            if(textIndex >= btnTexts.length) { clearInterval(cycleTimer); longPressTriggered = true; document.getElementById('in').value = 'lazy'; toggleCl(); find(); }
-        }, 600);
-    }
-
-    function endHold(e) { isHolding = false; clearInterval(cycleTimer); if (!longPressTriggered) find(); toggleCl(); }
-    function cancelHold(e) { isHolding = false; clearInterval(cycleTimer); toggleCl(); }
     function clearAll() { document.getElementById('in').value = ''; document.getElementById('result-area').innerHTML = ''; toggleCl(); }
 
     function find() {
@@ -357,6 +340,7 @@
         if(!val) return;
         let keywords = val.replace(/,/g, ' ').split(/\s+/).filter(item => item !== "");
         keywords = keywords.map(k => TYPO_MAP[k] || k);
+        let matches = [];
         let specialMsg = null;
         if (keywords.some(k => LAZY_WORDS.includes(k))) { specialMsg = ROBO_LAZY[Math.floor(Math.random()*ROBO_LAZY.length)]; }
         else if (keywords.some(k => SICK_WORDS.includes(k))) { specialMsg = ROBO_SICK[Math.floor(Math.random()*ROBO_SICK.length)]; }
@@ -368,16 +352,16 @@
         } else {
             matches = pool.filter(r => keywords.some(k => r.name.toLowerCase().includes(k) || (r.tags && r.tags.toLowerCase().includes(k))));
         }
-        display();
+        display(matches);
     }
 
-    function display() {
+    function display(results) {
         const out = document.getElementById('result-area');
-        if(matches.length === 0) {
+        if(results.length === 0) {
             out.innerHTML = `<div style="color:#999; text-align:center; padding:30px;">${EMPTY_MSGS[Math.floor(Math.random()*EMPTY_MSGS.length)]}</div>`;
             return;
         }
-        let pickup = matches[0]?.isSpecial ? matches : [...matches].sort(() => 0.5 - Math.random()).slice(0, 3);
+        let pickup = results[0]?.isSpecial ? results : [...results].sort(() => 0.5 - Math.random()).slice(0, 3);
         out.innerHTML = pickup.map(r => `
             <div class="card ${r.isSpecial ? 'card-lazy' : ''}">
                 <span class="name" onclick="copy('${r.name}')">${r.name}</span>
@@ -385,7 +369,7 @@
                     <span class="tag">${r.time}</span>
                     <span class="tag tag-vibe">${r.vibe}</span>
                 </div>
-                ${r.isSpecial ? '' : `<a href="${r.affiliate_url || 'https://www.amazon.com/s?k=' + r.name + '+kit'}" target="_blank" class="amazon-link">🛒 Shop ingredients</a>`}
+                ${r.isSpecial ? '' : `<a href="${r.affiliate_url || 'https://www.amazon.com/s?k=' + encodeURIComponent(r.name) + '+kit'}" target="_blank" class="amazon-link">🛒 Shop ingredients</a>`}
             </div>
         `).join('');
     }
